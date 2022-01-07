@@ -12,7 +12,46 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file for how to help out.
 
 ## How to Use
 
-To try the showcase, simply load the project in the Unreal Editor, build, and launch!
+### Load the project
+
+First, ensure you have Git LFS installed by running this command:
+```sh
+git lfs install
+```
+
+Then, clone this repo using the "Code" button above, or this command:
+```sh
+git clone https://github.com/oculus-samples/Unreal-HandGameplay.git
+```
+
+Finally, launch the project in the Unreal Editor using one of the following options.
+
+#### Epic Games Launcher
+
+The easiest way to get started is to use the prebuilt Unreal Engine from the Epic Games Launcher. However, the [Hand Movement Filtering](./Plugins/OculusHandTools/README_HandTrackingFilter.md) will not be functional without using the Oculus fork below.
+
+1. Install the [Epic Games Launcher](https://www.epicgames.com/store/en-US/download)
+2. In the launcher, install Unreal Engine 4.27.2 or later
+3. Launch the Unreal Editor
+4. Click "More" <br /><img width="400" src="https://user-images.githubusercontent.com/791774/148618198-afbe2e70-18a4-41ec-9bad-bf90fac05edc.png" />
+5. Click "Browse" and select `HandGameplay.uproject`
+
+#### Oculus Unreal fork
+
+The Oculus Unreal fork will give you the most up to date integration of Oculus features, including support for [Hand Movement Filtering](./Plugins/OculusHandTools/README_HandTrackingFilter.md). However, you must build the editor from its source.
+
+1. [Get access to the Unreal source code](https://developer.oculus.com/documentation/unreal/unreal-building-ue4-from-source/#prerequisites)
+2. [Clone the 4.27 branch of the Oculus fork](https://github.com/Oculus-VR/UnrealEngine/tree/4.27)
+3. [Install Visual Studio](https://developer.oculus.com/documentation/unreal/unreal-building-ue4-from-source/#to-download-and-build-unreal-engine)
+4. Open a command prompt in the root of the Unreal, then run this command:
+```sh
+.\GenerateProjectFiles.bat -Game HandGameplay -Engine <full path to Unreal-HandGameplay directory>\HandGameplay.uproject
+```
+5. Open the `HandGameplay.sln` file that has been generated in the `Unreal-HandGameplay` directory.
+6. Set `HandGameplay` as the start-up project and `Development Editor` as the configuration.
+7. Hit `F5` to build and debug the project (and the engine).
+
+### Use as plugin
 
 To integrate these features into your own project, install the OculusHandTools plugin into your project. The easiest way to do so is to download the latest [release](../../releases/latest) of `OculusHandTools.zip` and extract it into your project's `Plugins` folder.
 
