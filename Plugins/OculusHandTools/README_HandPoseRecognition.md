@@ -10,9 +10,9 @@ The [UHandPoseRecognizer](../Source/OculusHandPoseRecognition/Public/HandPoseRec
 
 There can be multiple recognizers per hand, each with its own set of hand poses to recognize.  The main reason to group hand poses into one recognizer is when they are mutually exclusive from one another.  In our showcase, we provide a recognizer for American Sign Language numbers and another for letters.  In actual ASL, there is a way to distinguish the letter 'O' and the number '0', but in our example we have limited ourselves to static hand poses and having them recognized in separate recognizers allows us to recognize both in parallel.
 
-### Reference Hand Poses
+### Pose Strings
 
-Each hand pose to recognize is described as a set of bone angles.  Here's the thumbs-up pose description for the left hand.
+What each recognizer can recognize is described as a set of bone angles.  Here's the thumbs-up pose description for the left hand.
 
     L T0-52-18+51 T1+13-8+30 T2+7-9-10 T3-10+21+8
       I1+6-72+1 I2-3-108+1 I3+1-55-3
@@ -24,6 +24,8 @@ Each hand pose to recognize is described as a set of bone angles.  Here's the th
 The description starts with 'L' or 'R' for the left and right hands.  It is followed by an ordered list of hand bones starting with letters 'T' (Thumb), 'I' (Index), 'M' (Middle), 'R' (Ring), 'P' (Pinky) and finally 'W' (Wrist). All bones, except the wrist, are followed by a bone index starting at 0 for the thumb and pinky, and 1 for the other three fingers.
 
 Angles are described by three signed numbers for pitch, yaw and roll in that order.  All angles are expressed in degrees with whole numbers.
+
+You can easily generate new pose strings by using the logger described in [Using a Hand Pose Recognizer](#using-a-hand-pose-recognizer).
 
 ### Computing Distance (a.k.a. Error) To Hand Pose
 
@@ -75,7 +77,7 @@ The confidence floor is the minimum confidence level required for a pose to be r
 
 The damping factor indicates how slow we integrate hand bone updates per recognition interval.  By default we use the latest values fully every tick.  A value of 0.2 indicates that we merge 80% of the latest value with the current state.
 
-Finally, and maybe most importantly, you can configure an array of poses. There are no preset limits to the number of poses one recognizer can handle.
+Finally, and maybe most importantly, you can configure an array of [poses](#pose-strings). There are no preset limits to the number of poses one recognizer can handle.
 
 Each pose has a name.  That name is not required to be unique even within the same recognizer (two poses can still be distinguised by the recognized pose index, if needed).  Then you have the custom encoded pose, the custom confidence floor and the error at max confidence that were discussed in earlier sections.
 
