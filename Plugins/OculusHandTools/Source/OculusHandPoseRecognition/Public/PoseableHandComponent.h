@@ -14,6 +14,8 @@ class OCULUSHANDPOSERECOGNITION_API UPoseableHandComponent : public UOculusHandC
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
@@ -24,6 +26,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DefaultLerpSpeed = 10.f;
+
+protected:
+	bool bCustomPoseableHandMesh = false;
 
 private:
 	void UpdateBonePose(EBone Bone, ERecognizedBone PosedBone);
