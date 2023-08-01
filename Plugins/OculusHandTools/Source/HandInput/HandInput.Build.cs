@@ -15,7 +15,7 @@ public class HandInput : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"InputCore",
-				"OculusInput",
+				"OculusXRInput",
 				"HeadMountedDisplay"
 			}
 		);
@@ -35,7 +35,5 @@ public class HandInput : ModuleRules
 
 		PrivateIncludePaths.AddRange(new string[] {
 		});
-
-		PrivateDefinitions.Add("WITH_OCULUS_ENGINE=" + (Target.Version.BranchName.Contains("Partner-Oculus") ? 1 : 0));
 	}
 }

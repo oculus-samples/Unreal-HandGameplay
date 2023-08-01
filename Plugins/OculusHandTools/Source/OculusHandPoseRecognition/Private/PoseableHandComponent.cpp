@@ -24,31 +24,31 @@ void UPoseableHandComponent::TickComponent(float DeltaTime, enum ELevelTick Tick
 
 	if (CustomPoseWeightCurrent > 0.f)
 	{
-		UpdateBonePose(EBone::Thumb_0, Thumb_0);
-		UpdateBonePose(EBone::Thumb_1, Thumb_1);
-		UpdateBonePose(EBone::Thumb_2, Thumb_2);
-		UpdateBonePose(EBone::Thumb_3, Thumb_3);
+		UpdateBonePose(EOculusXRBone::Thumb_0, Thumb_0);
+		UpdateBonePose(EOculusXRBone::Thumb_1, Thumb_1);
+		UpdateBonePose(EOculusXRBone::Thumb_2, Thumb_2);
+		UpdateBonePose(EOculusXRBone::Thumb_3, Thumb_3);
 
-		UpdateBonePose(EBone::Index_1, Index_1);
-		UpdateBonePose(EBone::Index_2, Index_2);
-		UpdateBonePose(EBone::Index_3, Index_3);
+		UpdateBonePose(EOculusXRBone::Index_1, Index_1);
+		UpdateBonePose(EOculusXRBone::Index_2, Index_2);
+		UpdateBonePose(EOculusXRBone::Index_3, Index_3);
 
-		UpdateBonePose(EBone::Middle_1, Middle_1);
-		UpdateBonePose(EBone::Middle_2, Middle_2);
-		UpdateBonePose(EBone::Middle_3, Middle_3);
+		UpdateBonePose(EOculusXRBone::Middle_1, Middle_1);
+		UpdateBonePose(EOculusXRBone::Middle_2, Middle_2);
+		UpdateBonePose(EOculusXRBone::Middle_3, Middle_3);
 
-		UpdateBonePose(EBone::Ring_1, Ring_1);
-		UpdateBonePose(EBone::Ring_2, Ring_2);
-		UpdateBonePose(EBone::Ring_3, Ring_3);
+		UpdateBonePose(EOculusXRBone::Ring_1, Ring_1);
+		UpdateBonePose(EOculusXRBone::Ring_2, Ring_2);
+		UpdateBonePose(EOculusXRBone::Ring_3, Ring_3);
 
-		UpdateBonePose(EBone::Pinky_0, Pinky_0);
-		UpdateBonePose(EBone::Pinky_1, Pinky_1);
-		UpdateBonePose(EBone::Pinky_2, Pinky_2);
-		UpdateBonePose(EBone::Pinky_3, Pinky_3);
+		UpdateBonePose(EOculusXRBone::Pinky_0, Pinky_0);
+		UpdateBonePose(EOculusXRBone::Pinky_1, Pinky_1);
+		UpdateBonePose(EOculusXRBone::Pinky_2, Pinky_2);
+		UpdateBonePose(EOculusXRBone::Pinky_3, Pinky_3);
 	}
 }
 
-void UPoseableHandComponent::UpdateBonePose(EBone Bone, ERecognizedBone PosedBone)
+void UPoseableHandComponent::UpdateBonePose(EOculusXRBone Bone, ERecognizedBone PosedBone)
 {
 	auto BoneIndex = (int)Bone;
 

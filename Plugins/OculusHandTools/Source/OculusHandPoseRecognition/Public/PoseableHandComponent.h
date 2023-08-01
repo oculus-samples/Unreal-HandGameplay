@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OculusHandComponent.h"
+#include "OculusXRHandComponent.h"
 #include "HandPose.h"
 
 #include "PoseableHandComponent.generated.h"
 
 UCLASS(Blueprintable, meta = (BlueprintSpawnableComponent), ClassGroup = OculusHand)
-class OCULUSHANDPOSERECOGNITION_API UPoseableHandComponent : public UOculusHandComponent
+class OCULUSHANDPOSERECOGNITION_API UPoseableHandComponent : public UOculusXRHandComponent
 {
 	GENERATED_BODY()
 
@@ -31,7 +31,7 @@ protected:
 	bool bCustomPoseableHandMesh = false;
 
 private:
-	void UpdateBonePose(EBone Bone, ERecognizedBone PosedBone);
+	void UpdateBonePose(EOculusXRBone Bone, ERecognizedBone PosedBone);
 
 	float CustomPoseWeightCurrent;
 	float CustomPoseWeightTarget;

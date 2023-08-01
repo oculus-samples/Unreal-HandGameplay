@@ -37,7 +37,7 @@ void UHandGestureRecognizer::BeginPlay()
 		TurnOffGestureRecognition = true;
 	}
 
-	if (HandPoseRecognizer->Side == EOculusHandType::None)
+	if (HandPoseRecognizer->Side == EOculusXRHandType::None)
 	{
 		UE_LOG(LogHandPoseRecognition, Warning, TEXT("UHandGestureRecognizer called %s is attached to a disabled UHandPoseRecognizer."),
 			*GetName());

@@ -15,7 +15,7 @@ public class HandTrackingFilter : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"InputCore",
-				"OculusInput",
+				"OculusXRInput",
 				"HeadMountedDisplay"
 			}
 		);
@@ -34,7 +34,5 @@ public class HandTrackingFilter : ModuleRules
 
 		PrivateIncludePaths.AddRange(new string[] {
 		});
-
-		PrivateDefinitions.Add("WITH_OCULUS_ENGINE=" + (Target.Version.BranchName.Contains("Partner-Oculus") ? 1 : 0));
 	}
 }

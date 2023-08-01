@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Misc/CoreMisc.h"
 #include "HandRecognitionGameMode.generated.h"
 
 /**

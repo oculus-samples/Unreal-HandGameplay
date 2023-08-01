@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "Interactable.h"
 #include "GameFramework/Actor.h"
 #include "AimingActor.generated.h"
 

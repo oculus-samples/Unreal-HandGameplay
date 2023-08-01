@@ -25,7 +25,7 @@ void UInteractableFunctionLibrary::LogNearbyInteractables(AActor* ReferenceActor
 
 		for (const auto& Hit : Hits)
 		{
-			auto ActorTransform = Hit.Actor->GetTransform();
+			auto ActorTransform = Hit.GetActor()->GetTransform();
 			FTransform RelativeActorTransform;
 			RelativeActorTransform.SetLocation(ReferenceTransform.InverseTransformPosition(ActorTransform.GetLocation()));
 			RelativeActorTransform.SetRotation(ReferenceTransform.InverseTransformRotation(ActorTransform.GetRotation()));
@@ -35,7 +35,7 @@ void UInteractableFunctionLibrary::LogNearbyInteractables(AActor* ReferenceActor
 			FTransformString::TransformToString(RelativeActorTransform, RelativeActorTransformString);
 
 			UE_LOG(LogInteractable, Warning, TEXT("Interactable %s %s"),
-				*Hit.Actor->GetHumanReadableName(),
+				*Hit.GetActor()->GetHumanReadableName(),
 				*RelativeActorTransformString);
 		}
 	}

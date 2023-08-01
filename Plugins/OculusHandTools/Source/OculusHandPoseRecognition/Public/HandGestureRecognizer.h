@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
 #include "HandGesture.h"
 #include "HandPoseRecognizer.h"
 #include "HandGestureRecognizer.generated.h"
@@ -60,7 +61,7 @@ enum class EGestureStrengthBoneAngle : uint8
  * 
  * @warning Must be attached to a UHandPoseRecognizer.
  */
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class OCULUSHANDPOSERECOGNITION_API UHandGestureRecognizer : public USceneComponent
 {
 	GENERATED_BODY()
@@ -74,7 +75,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	/** Parent hand pose recognizer. */
-	UPROPERTY() UHandPoseRecognizer* HandPoseRecognizer = nullptr;
+	UHandPoseRecognizer* HandPoseRecognizer = nullptr;
 
 public:
 	/** Called every frame. */
@@ -110,7 +111,8 @@ public:
 	 * @return A boolean that indicates if a gesture is currently recognized.
 	 */
 	UFUNCTION(BlueprintCallable)
-	UPARAM(DisplayName = "Gesture Recognized") bool GetRecognizedHandGesture(
+	UPARAM(DisplayName = "Gesture Recognized")
+	bool GetRecognizedHandGesture(
 		EGestureConsumptionBehavior Behavior,
 		int& Index, FString& Name,
 		FVector& GestureDirection,
@@ -122,7 +124,8 @@ public:
 	 * @return Current state of gesture recognition.
 	 */
 	UFUNCTION(BlueprintCallable)
-	UPARAM(DisplayName = "Gesture State") EGestureState GetGestureRecognitionState(int Index);
+	UPARAM(DisplayName = "Gesture State")
+	EGestureState GetGestureRecognitionState(int Index);
 
 	/**
 	 * Resets the specified hand gesture by index.

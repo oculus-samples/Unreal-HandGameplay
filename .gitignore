@@ -71,3 +71,4 @@ Config/DefaultEditorSettings.ini
 Build/Android/res/drawable*/
 lfs/
 hooks/
+.vsconfig

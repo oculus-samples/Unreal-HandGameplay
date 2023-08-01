@@ -3,7 +3,7 @@
 #include "HandTrackingFilterComponent.h"
 
 #include "MotionControllerComponent.h"
-#include "OculusInputFunctionLibrary.h"
+#include "OculusXRInputFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "QuatUtil.h"
 #include "XRMotionControllerBase.h"
@@ -18,30 +18,17 @@ DEFINE_LOG_CATEGORY(LogHandTrackingFilter);
 UHandTrackingFilterComponent::UHandTrackingFilterComponent()
 {
 	bAutoActivate = true;
-
-#if !WITH_OCULUS_ENGINE
-	auto const ErrorMessage = FString::Printf(TEXT(
-		"HandTrackingFilter is not supported outside of the Oculus fork of Unreal Engine. "
-		"See https://developer.oculus.com/documentation/unreal/unreal-quick-start-guide-quest/#oculus-source for more info. %s"),
-		*GetFullName());
-	UE_LOG(LogHandTrackingFilter, Warning, TEXT("%s"), *ErrorMessage);
-	if (GEngine != nullptr && GetWorld() != nullptr && GetWorld()->IsGameWorld())
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, ErrorMessage);
-	}
-#endif
 }
 
 void UHandTrackingFilterComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-#if WITH_OCULUS_ENGINE
 	LastFrameData = FHandTrackingFilterData{NOW, GetComponentTransform()};
 
 	if (auto Controller = Cast<UMotionControllerComponent>(GetAttachParent()))
 	{
-		UOculusInputFunctionLibrary::HandMovementFilter.AddWeakLambda(this,
+		UOculusXRInputFunctionLibrary::HandMovementFilter.AddWeakLambda(this,
 			[this, ThisHand = Controller->GetTrackingSource()]
 		(
 			EControllerHand Hand,
@@ -50,7 +37,7 @@ void UHandTrackingFilterComponent::BeginPlay()
 			bool* Success
 		)
 			{
-				if (Hand == ThisHand && UOculusInputFunctionLibrary::IsHandTrackingEnabled())
+				if (Hand == ThisHand && UOculusXRInputFunctionLibrary::IsHandTrackingEnabled())
 				{
 					if (IsInGameThread() && PreFilterComponent)
 					{
@@ -67,19 +54,15 @@ void UHandTrackingFilterComponent::BeginPlay()
 				}
 			});
 	}
-#endif
 }
 
 void UHandTrackingFilterComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-#if WITH_OCULUS_ENGINE
-	UOculusInputFunctionLibrary::HandMovementFilter.RemoveAll(this);
-#endif
+	UOculusXRInputFunctionLibrary::HandMovementFilter.RemoveAll(this);
 }
 
 EHandTrackingDataQuality UHandTrackingFilterComponent::GetDataQualityOverride() const
 {
-#if WITH_OCULUS_ENGINE
 	if (bIgnoreConfidence)
 		return EHandTrackingDataQuality::None;
 
@@ -87,14 +70,13 @@ EHandTrackingDataQuality UHandTrackingFilterComponent::GetDataQualityOverride() 
 	{
 		auto Hand = EControllerHand::Left;
 		FXRMotionControllerBase::GetHandEnumForSourceName(Controller->MotionSource, Hand);
-		auto const DeviceHand = Hand == EControllerHand::Left ? EOculusHandType::HandLeft : EOculusHandType::HandRight;
+		auto const DeviceHand = Hand == EControllerHand::Left ? EOculusXRHandType::HandLeft : EOculusXRHandType::HandRight;
 		return Controller->IsTracked() ?
-			UOculusInputFunctionLibrary::GetTrackingConfidence(DeviceHand) == ETrackingConfidence::High ?
+			UOculusXRInputFunctionLibrary::GetTrackingConfidence(DeviceHand) == EOculusXRTrackingConfidence::High ?
 			EHandTrackingDataQuality::Good :
 			EHandTrackingDataQuality::None :
 			EHandTrackingDataQuality::Bad;
 	}
-#endif
 
 	return EHandTrackingDataQuality::None;
 }
@@ -135,13 +117,6 @@ FVector UHandTrackingFilterComponent::SmoothPosition(FVector StartPos, FVector T
 void UHandTrackingFilterComponent::SetPreFilterComponent(USceneComponent* Component)
 {
 	PreFilterComponent = Component;
-
-#if !WITH_OCULUS_ENGINE
-	if (auto const Controller = Cast<UMotionControllerComponent>(GetAttachParent()))
-	{
-		PreFilterComponent->AttachToComponent(Controller, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	}
-#endif
 }
 
 FQuat UHandTrackingFilterComponent::SmoothRotation(FQuat StartRot, FQuat TargetRot)

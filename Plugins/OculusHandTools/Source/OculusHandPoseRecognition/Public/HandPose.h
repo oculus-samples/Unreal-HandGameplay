@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OculusInputFunctionLibrary.h"
+#include "OculusXRInputFunctionLibrary.h"
 #include "HandPose.generated.h"
 
 /** Bones that we care about. */
@@ -37,6 +37,7 @@ struct OCULUSHANDPOSERECOGNITION_API FHandPose
 {
 	GENERATED_BODY()
 
+public:
 	/** Name for this pose. */
 	UPROPERTY(Category = "Hand Pose", EditAnywhere, BlueprintReadWrite)
 	FString PoseName;
@@ -59,7 +60,7 @@ struct OCULUSHANDPOSERECOGNITION_API FHandPose
 	float ErrorAtMaxConfidence = 2000.0f;
 
 	/** Returns the side that this */
-	EOculusHandType GetHandType() const
+	EOculusXRHandType GetHandType() const
 	{
 		return Hand;
 	}
@@ -88,10 +89,10 @@ struct OCULUSHANDPOSERECOGNITION_API FHandPose
 	 * Updates the structure with the current bone rotations for the side specified.
 	 * Wrist information is received from the HandPoseRecognizer.
 	 *
-	 * @param Side - EOculusHandType to track
+	 * @param Side - EOculusXRHandType to track
 	 * @param Wrist - FRotator from the controller.
 	 */
-	void UpdatePose(EOculusHandType Side, FRotator Wrist);
+	void UpdatePose(EOculusXRHandType Hand, FRotator Wrist);
 
 	/** Encodes rotators to string form, without weights. */
 	void Encode();
@@ -135,7 +136,7 @@ struct OCULUSHANDPOSERECOGNITION_API FHandPose
 
 protected:
 	/** Hand side that will be set during parsing. */
-	EOculusHandType Hand = EOculusHandType::None;
+	EOculusXRHandType Hand = EOculusXRHandType::None;
 
 	/** Hand bone rotators. */
 	FRotator Rotations[NUM];
@@ -147,7 +148,7 @@ private:
 	static int NormalizedOutputAngle(float Angle);
 	static FString FmtRot(FString Prefix, FRotator R);
 	static void SkipWhitespace(const TCHAR** Buffer);
-	static bool ReadRotComp(const TCHAR** Buffer, float* RotComp);
+	static bool ReadRotComp(const TCHAR** Buffer, double* RotComp);
 	static bool ReadWeight(const TCHAR** Buffer, float* Weight);
 	static bool ReadRot(const TCHAR** Buffer, const TCHAR* Prefix, FRotator& R, float& Weight);
 	static float ComputeAngleError(float Ref, float Angle);

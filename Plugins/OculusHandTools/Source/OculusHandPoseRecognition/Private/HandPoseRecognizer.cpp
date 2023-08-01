@@ -10,7 +10,7 @@ UHandPoseRecognizer::UHandPoseRecognizer(const FObjectInitializer& ObjectInitial
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// Recognition default parameters
-	Side = EOculusHandType::None;
+	Side = EOculusXRHandType::None;
 	RecognitionInterval = 0.0f;
 	DefaultConfidenceFloor = 0.5;
 	DampingFactor = 0.0f;
@@ -62,7 +62,7 @@ void UHandPoseRecognizer::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (Side == EOculusHandType::None)
+	if (Side == EOculusXRHandType::None)
 	{
 		// Recognizer is disabled
 		return;
@@ -76,7 +76,7 @@ void UHandPoseRecognizer::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 
 	// Ignore low confidence cases
-	if (UOculusInputFunctionLibrary::GetTrackingConfidence(Side) == ETrackingConfidence::Low)
+	if (UOculusXRInputFunctionLibrary::GetTrackingConfidence(Side) == EOculusXRTrackingConfidence::Low)
 	{
 		return;
 	}

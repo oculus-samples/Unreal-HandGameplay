@@ -4,7 +4,7 @@
 
 #include "HandInput.h"
 
-#include "OculusInputFunctionLibrary.h"
+#include "OculusXRInputFunctionLibrary.h"
 #include "EnumMap.h"
 
 #include "CameraHandInput.generated.h"
@@ -13,7 +13,7 @@ class UTransformBufferComponent;
 
 namespace OculusInput
 {
-	enum class EOculusHandButton;
+	enum class EOculusXRHandButton;
 }
 
 class UPoseableMeshComponent;
@@ -45,7 +45,7 @@ struct HANDINPUT_API FHandBoneMapping
 	int BoneId;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	EBone MappedBone;
+	EOculusXRBone MappedBone;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FQuat RotationOffset = FQuat::Identity;
@@ -90,7 +90,7 @@ public:
 	// ~IHandInput
 
 	UFUNCTION(BlueprintPure)
-	EOculusHandType GetHand() const;
+	EOculusXRHandType GetHand() const;
 
 	UFUNCTION(BlueprintPure)
 	UPoseableMeshComponent* GetMesh() const;
@@ -195,7 +195,7 @@ public:
 	bool IsInGrabPose() const { return bIsInGrabPose; }
 
 	UFUNCTION(BlueprintPure)
-	FTransform GetBoneTransformWorld(EBone Bone) { return BoneCache[Bone]; }
+	FTransform GetBoneTransformWorld(EOculusXRBone Bone) { return BoneCache[Bone]; }
 
 	UFUNCTION(BlueprintPure)
 	bool IsTracked() const;
@@ -216,14 +216,14 @@ protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	EOculusHandType Hand = EOculusHandType::None;
+	EOculusXRHandType Hand = EOculusXRHandType::None;
 	bool bIsActive = false;
 
 	void UpdateTracking();
 	bool WasTrackedLastFrame = false;
 	float TimeWhenTrackingLastGained = -1;
 
-	void FilterBoneRotation(EBone Bone, FQuat LastRotation, FQuat& Rotation);
+	void FilterBoneRotation(EOculusXRBone Bone, FQuat LastRotation, FQuat& Rotation);
 	static void SetBoneRotation(UPoseableMeshComponent* HandMesh, FHandBoneMapping BoneMapping, FQuat BoneRotation);
 	void UpdateSkeleton();
 
@@ -253,11 +253,11 @@ private:
 	void UpdateMeshVisibility() const;
 
 	// cache bone transforms from hand tracking for use by gameplay code
-	TEnumMap<EBone, FTransform> BoneCache;
-	TEnumMap<EBone, FQuat> RawLocalSpaceRotations;
+	TEnumMap<EOculusXRBone, FTransform> BoneCache;
+	TEnumMap<EOculusXRBone, FQuat> RawLocalSpaceRotations;
 
 	// cache bone rotations from hand tracking for smoothing
-	TEnumMap<EBone, FQuat> BoneRotations;
-	TEnumMap<EBone, FQuat> BoneVelocities;
-	TEnumMap<EBone, float> BoneLastFrozenTimes;
+	TEnumMap<EOculusXRBone, FQuat> BoneRotations;
+	TEnumMap<EOculusXRBone, FQuat> BoneVelocities;
+	TEnumMap<EOculusXRBone, float> BoneLastFrozenTimes;
 };

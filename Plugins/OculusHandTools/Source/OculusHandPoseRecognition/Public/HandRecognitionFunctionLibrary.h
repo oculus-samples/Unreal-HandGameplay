@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "HandGestureRecognizer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "HandRecognitionFunctionLibrary.generated.h"
 
@@ -13,7 +11,7 @@ class UHandGestureRecognizer;
 
 /** Output exec pins for the WaitForHandPose blueprint node. */
 UENUM(BlueprintType)
-enum class EWaitForHandPoseExitType: uint8
+enum class EWaitForHandPoseExitType : uint8
 {
 	PoseSeen,
 	TimeOut,

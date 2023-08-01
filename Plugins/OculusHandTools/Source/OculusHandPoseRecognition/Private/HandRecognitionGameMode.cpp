@@ -2,8 +2,8 @@
 
 #include "HandRecognitionGameMode.h"
 #include "OculusHandPoseRecognitionModule.h"
-#include "OculusInputFunctionLibrary.h"
-#include "OculusHandComponent.h"
+#include "OculusXRInputFunctionLibrary.h"
+#include "OculusXRHandComponent.h"
 #include "HandPose.h"
 
 int AHandRecognitionGameMode::LoggedIndex = 0;
@@ -32,19 +32,19 @@ void AHandRecognitionGameMode::LogHandPose(FString Side)
 	}
 
 	// We use the first matching OculusHandComponent.
-	auto HandType = EOculusHandType::None;
+	auto HandType = EOculusXRHandType::None;
 	if (Side.Equals(TEXT("left"), ESearchCase::IgnoreCase))
-		HandType = EOculusHandType::HandLeft;
+		HandType = EOculusXRHandType::HandLeft;
 	else if (Side.Equals(TEXT("right"), ESearchCase::IgnoreCase))
-		HandType = EOculusHandType::HandRight;
+		HandType = EOculusXRHandType::HandRight;
 
-	if (HandType == EOculusHandType::None)
+	if (HandType == EOculusXRHandType::None)
 	{
 		UE_LOG(LogHandPoseRecognition, Error, TEXT("LogHandPose requires \"left\" or \"right\" parameter, but received \"%s\""), *Side);
 		return;
 	}
 
-	TArray<UOculusHandComponent*> OculusHandComponents;
+	TArray<UOculusXRHandComponent*> OculusHandComponents;
 	Pawn->GetComponents(OculusHandComponents);
 	for (auto HandComponent : OculusHandComponents)
 	{

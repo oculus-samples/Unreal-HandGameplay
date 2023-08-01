@@ -33,7 +33,7 @@ private:
 	 * @param Destination - Output float.
 	 * @return bool - True if prefix matches.
 	 */
-	static bool ReadFloat(FString& Source, const TCHAR* ExpectedPrefix, float& Destination)
+	static bool ReadFloat(FString& Source, const TCHAR* ExpectedPrefix, double& Destination)
 	{
 		if (**Source != *ExpectedPrefix) return false;
 		Destination = FCString::Atof(*Source + 1);

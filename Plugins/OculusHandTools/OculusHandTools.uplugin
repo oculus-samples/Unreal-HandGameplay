@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "1.1",
 	"FriendlyName": "OculusHandTools",
 	"Description": "",
 	"Category": "Other",
@@ -73,8 +73,13 @@
 	],
 	"Plugins": [
 		{
-			"Name": "OculusVR",
-			"Enabled": true
+			"Name": "OculusXR",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/8313d8d7e7cf4e03a33e79eb757bccba",
+			"SupportedTargetPlatforms": [
+				"Win64",
+				"Android"
+			]
 		},
 		{
 			"Name": "OculusUtils",

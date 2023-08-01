@@ -109,7 +109,7 @@ void AInteractableSelector::Tick(float DeltaTime)
 
 			if (Hits.Num() > 0)
 			{
-				NonInteractableActorHit = Hits[0].Actor;
+				NonInteractableActorHit = Hits[0].GetActor();
 
 				if (bAlignAimingActorWithHitNormal)
 				{
@@ -142,18 +142,18 @@ void AInteractableSelector::Tick(float DeltaTime)
 			{
 				for (auto const& Hit : Hits)
 				{
-					if (Hit.Actor.Get() && Hit.Actor->GetClass()->IsChildOf(AInteractable::StaticClass()) && TestShouldSelect(Hit.Actor))
+					if (Hit.GetActor() && Hit.GetActor()->GetClass()->IsChildOf(AInteractable::StaticClass()) && TestShouldSelect(Hit.GetActor()))
 					{
-						auto const Distance = FVector::Distance(Hit.Actor->GetActorLocation(), StartCast);
+						auto const Distance = FVector::Distance(Hit.GetActor()->GetActorLocation(), StartCast);
 						if (CandidateDistance > Distance)
 						{
 							CandidateDistance = Distance;
-							Candidate = Cast<AInteractable>(Hit.Actor);
+							Candidate = Cast<AInteractable>(Hit.GetActor());
 							CandidateInNearField = true;
 						}
 					}
 
-					// UE_LOG(LogTemp, Error, TEXT("Hit near field %s at %0.0f"), *Hit.Actor->GetName(), CandidateDistance);
+					// UE_LOG(LogTemp, Error, TEXT("Hit near field %s at %0.0f"), *Hit.GetActor()->GetName(), CandidateDistance);
 				}
 			}
 		}
@@ -182,10 +182,10 @@ void AInteractableSelector::Tick(float DeltaTime)
 			{
 				for (auto const& Hit : Hits)
 				{
-					// GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Blue, FString::Printf(TEXT("Hit %s at %f"), *Hit.Actor->GetName(), Hit.Distance));
-					if (Hit.Actor.Get() && Hit.Actor->GetClass()->IsChildOf(AInteractable::StaticClass()) && TestShouldSelect(Hit.Actor))
+					// GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Blue, FString::Printf(TEXT("Hit %s at %f"), *Hit.GetActor()->GetName(), Hit.Distance));
+					if (Hit.GetActor() && Hit.GetActor()->GetClass()->IsChildOf(AInteractable::StaticClass()) && TestShouldSelect(Hit.GetActor()))
 					{
-						auto const Angle = ComputeAngularDistance(Hit.Actor.Get());
+						auto const Angle = ComputeAngularDistance(Hit.GetActor());
 
 						// Since CandidateAngle starts at RaycastAngleDegrees, we cannot select outside of the cone.
 						if (Angle > CandidateAngle || Angle == CandidateAngle && Hit.Distance >= CandidateDistance)
@@ -195,7 +195,7 @@ void AInteractableSelector::Tick(float DeltaTime)
 
 						CandidateAngle = Angle;
 						CandidateDistance = Hit.Distance;
-						Candidate = Cast<AInteractable>(Hit.Actor);
+						Candidate = Cast<AInteractable>(Hit.GetActor());
 					}
 				}
 			}

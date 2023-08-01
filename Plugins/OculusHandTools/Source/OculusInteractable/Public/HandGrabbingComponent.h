@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 #include "Interactable.h"
+#include "OculusXRInputFunctionLibrary.h"
 
 #include "HandGrabbingComponent.generated.h"
 
@@ -23,7 +24,7 @@ public:
 	AInteractable* TryRelease(bool bReenablePhysics = true);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Grabbing")
-	EHandSide Hand = EHandSide::HandLeft;
+	EOculusXRHandType Hand = EOculusXRHandType::HandLeft;
 
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "Grabbing")
 	AInteractable* GrabbedActor = nullptr;

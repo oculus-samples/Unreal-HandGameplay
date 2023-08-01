@@ -1,29 +1,29 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 #include "HandPose.h"
-#include "OculusInputFunctionLibrary.h"
+#include "OculusXRInputFunctionLibrary.h"
 #include <limits>
 
-void FHandPose::UpdatePose(EOculusHandType Side, FRotator Wrist)
+void FHandPose::UpdatePose(EOculusXRHandType Side, FRotator Wrist)
 {
 	Hand = Side;
-	Rotations[Thumb_0] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Thumb_0).Rotator();
-	Rotations[Thumb_1] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Thumb_1).Rotator();
-	Rotations[Thumb_2] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Thumb_2).Rotator();
-	Rotations[Thumb_3] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Thumb_3).Rotator();
-	Rotations[Index_1] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Index_1).Rotator();
-	Rotations[Index_2] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Index_2).Rotator();
-	Rotations[Index_3] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Index_3).Rotator();
-	Rotations[Middle_1] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Middle_1).Rotator();
-	Rotations[Middle_2] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Middle_2).Rotator();
-	Rotations[Middle_3] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Middle_3).Rotator();
-	Rotations[Ring_1] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Ring_1).Rotator();
-	Rotations[Ring_2] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Ring_2).Rotator();
-	Rotations[Ring_3] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Ring_3).Rotator();
-	Rotations[Pinky_0] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Pinky_0).Rotator();
-	Rotations[Pinky_1] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Pinky_1).Rotator();
-	Rotations[Pinky_2] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Pinky_2).Rotator();
-	Rotations[Pinky_3] = UOculusInputFunctionLibrary::GetBoneRotation(Side, EBone::Pinky_3).Rotator();
+	Rotations[Thumb_0] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Thumb_0).Rotator();
+	Rotations[Thumb_1] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Thumb_1).Rotator();
+	Rotations[Thumb_2] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Thumb_2).Rotator();
+	Rotations[Thumb_3] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Thumb_3).Rotator();
+	Rotations[Index_1] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Index_1).Rotator();
+	Rotations[Index_2] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Index_2).Rotator();
+	Rotations[Index_3] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Index_3).Rotator();
+	Rotations[Middle_1] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Middle_1).Rotator();
+	Rotations[Middle_2] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Middle_2).Rotator();
+	Rotations[Middle_3] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Middle_3).Rotator();
+	Rotations[Ring_1] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Ring_1).Rotator();
+	Rotations[Ring_2] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Ring_2).Rotator();
+	Rotations[Ring_3] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Ring_3).Rotator();
+	Rotations[Pinky_0] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Pinky_0).Rotator();
+	Rotations[Pinky_1] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Pinky_1).Rotator();
+	Rotations[Pinky_2] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Pinky_2).Rotator();
+	Rotations[Pinky_3] = UOculusXRInputFunctionLibrary::GetBoneRotation(Side, EOculusXRBone::Pinky_3).Rotator();
 	Rotations[ERecognizedBone::Wrist] = Wrist;
 }
 
@@ -32,7 +32,7 @@ void FHandPose::Encode()
 	CustomEncodedPose.Empty(1024);
 
 	CustomEncodedPose
-		.Append(Hand == EOculusHandType::HandLeft ? "L" : "R")
+		.Append(Hand == EOculusXRHandType::HandLeft ? "L" : "R")
 		.Append(*FmtRot(TEXT(" T0"), Rotations[Thumb_0]))
 		.Append(*FmtRot(TEXT(" T1"), Rotations[Thumb_1]))
 		.Append(*FmtRot(TEXT(" T2"), Rotations[Thumb_2]))
@@ -58,7 +58,7 @@ bool FHandPose::Decode()
 	const TCHAR* Buffer = CustomEncodedPose.GetCharArray().GetData();
 	if (!Buffer)
 	{
-		Hand = EOculusHandType::None;
+		Hand = EOculusXRHandType::None;
 		return false;
 	}
 
@@ -67,15 +67,15 @@ bool FHandPose::Decode()
 	// Hand
 	if (Buffer && *Buffer == 'L')
 	{
-		Hand = EOculusHandType::HandLeft;
+		Hand = EOculusXRHandType::HandLeft;
 	}
 	else if (Buffer && *Buffer == 'R')
 	{
-		Hand = EOculusHandType::HandRight;
+		Hand = EOculusXRHandType::HandRight;
 	}
 	else
 	{
-		Hand = EOculusHandType::None;
+		Hand = EOculusXRHandType::None;
 		return false;
 	}
 	++Buffer;
@@ -103,7 +103,7 @@ bool FHandPose::Decode()
 
 	if (!Successful)
 	{
-		Hand = EOculusHandType::None;
+		Hand = EOculusXRHandType::None;
 	}
 
 	return Successful;
@@ -197,7 +197,7 @@ void FHandPose::SkipWhitespace(const TCHAR** Buffer)
 		++*Buffer;
 }
 
-bool FHandPose::ReadRotComp(const TCHAR** Buffer, float* RotComp)
+bool FHandPose::ReadRotComp(const TCHAR** Buffer, double* RotComp)
 {
 	SkipWhitespace(Buffer);
 
@@ -227,7 +227,7 @@ bool FHandPose::ReadRotComp(const TCHAR** Buffer, float* RotComp)
 
 	if (Negative)
 	{
-		*RotComp *= -1.0f;
+		*RotComp *= -1.0;
 	}
 
 	return true;

@@ -118,7 +118,7 @@ public:
 
 	/**
 	 * Selects the best grab pose for the interactable, if any.
-	 * @param Side - EOculusHandType to select left or right hand.
+	 * @param Side - EOculusXRHandType to select left or right hand.
 	 * @param GrabPoseFound - returns a boolean indicating if a grab pose was found.
 	 * @param GrabPoseName - if GrabPoseFound, returns the hand pose while grabbing.
 	 * @param GrabTransform - if GrabPoseFound, returns the Interactable's transform relative to the hand.
