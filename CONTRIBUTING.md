@@ -21,5 +21,17 @@ We use GitHub issues to track public bugs. Please ensure your description is cle
 
 Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. In those cases, please go through the process outlined on that page and do not file a public issue.
 
+
+
+## Additional Guidelines for Contributors
+To enhance the contribution process further, we have some additional guidelines for contributors:
+
+- Testing: We highly encourage you to test your changes thoroughly before submitting a pull request. Ensure that your code additions or changes do not introduce new issues and that existing functionality remains intact.
+
+- Documentation: Clear and well-structured documentation is essential. If you make changes to the code or APIs, please update the project's documentation accordingly. Well-documented code helps everyone understand and use the project effectively.
+
+- Communication: Effective communication is key to a successful open-source collaboration. If you have questions, suggestions, or need clarification on anything related to the project, feel free to engage with the community through discussions or the project's communication channels.
+
+
 ## License
 By contributing, you agree that your contributions will be licensed under the LICENSE file in the root directory of this source tree.
