@@ -31,7 +31,7 @@ Finally, launch the project in the Unreal Editor using one of the following opti
 The easiest way to get started is to use the prebuilt Unreal Engine from the Epic Games Launcher. However, the [Hand Movement Filtering](./Plugins/OculusHandTools/README_HandTrackingFilter.md) will not be functional without using the Oculus fork below.
 
 1. Install the [Epic Games Launcher](https://www.epicgames.com/store/en-US/download)
-2. In the launcher, install Unreal Engine 5.2 or later
+2. In the launcher, install Unreal Engine 5.3 or later
 3. Launch the Unreal Editor
 4. Click "More" <br /><img width="400" src="https://user-images.githubusercontent.com/791774/148618198-afbe2e70-18a4-41ec-9bad-bf90fac05edc.png" />
 5. Click "Browse" and select `HandGameplay.uproject`
@@ -41,7 +41,7 @@ The easiest way to get started is to use the prebuilt Unreal Engine from the Epi
 The Oculus Unreal fork will give you the most up to date integration of Oculus features. However, you must build the editor from its source.
 
 1. [Get access to the Unreal source code](https://developer.oculus.com/documentation/unreal/unreal-building-ue4-from-source/#prerequisites)
-2. [Clone the `oculus-5.2` branch of the Oculus fork](https://github.com/Oculus-VR/UnrealEngine/tree/oculus-5.2)
+2. [Clone the `oculus-5.3` branch of the Oculus fork](https://github.com/Oculus-VR/UnrealEngine/tree/oculus-5.3)
 3. [Install Visual Studio](https://developer.oculus.com/documentation/unreal/unreal-building-ue4-from-source/#to-download-and-build-unreal-engine)
 4. Open a command prompt in the root of the Unreal, then run this command:
 ```sh
@@ -76,3 +76,10 @@ You can find a detailed breakdown of how the mechanics are implemented [here](./
 |**[Hand Movement Filtering](./Plugins/OculusHandTools/README_HandTrackingFilter.md)**||Stabilizes the hand and finger movement while tracking is low quality or lost. This significantly improves the feel of using your hands, particularly in poor tracking situations like while punching. You can read more about the implementation of this component [here](https://developer.oculus.com/blog/adding-hand-tracking-to-first-steps/).|
 |**[Two-handed Aiming](./Plugins/OculusHandTools/#two-handed-aiming)**|<img width="256" src="./Media/aiming.png" />|Aiming is a reliable, useful, and fulfilling hand interaction when done with both hands.|
 |**[Example Hands for Tutorials](./Plugins/OculusHandTools/#example-hands-for-tutorials)**||Effectively illustrate to users the poses your app expects.|
+
+
+# Updates
+
+## 20 December 2023 Update
+
+We updated the project to UE5.3.
