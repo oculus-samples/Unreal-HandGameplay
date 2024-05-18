@@ -43,14 +43,20 @@ void UCameraHandInput::SetHand(EControllerHand InHand)
 
 void UCameraHandInput::SetUpBoneMap(UPoseableMeshComponent* HandMesh, TArray<FHandBoneMapping>& BoneMap)
 {
-	if (HandMesh == nullptr || HandMesh->SkeletalMesh == nullptr)
+	if (HandMesh == nullptr)
 		return;
+
+	auto SkinnedAsset = HandMesh->GetSkinnedAsset();
+	if (SkinnedAsset == nullptr)
+		return;
+
+	auto& RefSkeleton = SkinnedAsset->GetRefSkeleton();
 	
 	// set the bone ids for fast lookup
 	for (auto& BoneMapping : BoneMap)
 	{
 		auto BoneName = BoneMapping.BoneName;
-		auto const BoneIndex = HandMesh->SkeletalMesh->RefSkeleton.FindBoneIndex(BoneName);
+		auto const BoneIndex = RefSkeleton.FindBoneIndex(BoneName);
 		BoneMapping.BoneId = BoneIndex;
 
 		if (BoneIndex < 0)
@@ -60,7 +66,7 @@ void UCameraHandInput::SetUpBoneMap(UPoseableMeshComponent* HandMesh, TArray<FHa
 		}
 		else
 		{
-			BoneMapping.ReferenceTransform = HandMesh->SkeletalMesh->RefSkeleton.GetRefBonePose()[BoneIndex];
+			BoneMapping.ReferenceTransform = RefSkeleton.GetRefBonePose()[BoneIndex];
 		}
 	}
 }
@@ -70,11 +76,11 @@ void UCameraHandInput::SetPoseableMeshComponent(UPoseableMeshComponent* Poseable
 	HandMesh = PoseableMeshComponent;
 	UpdateMeshVisibility();
 
-	if (ensureMsgf(HandMesh, TEXT("SetPoseableMeshComponent failed")) && ensureMsgf(HandMesh->SkeletalMesh,
+	if (ensureMsgf(HandMesh, TEXT("SetPoseableMeshComponent failed")) && ensureMsgf(HandMesh->GetSkinnedAsset(),
 		TEXT("SetPoseableMeshComponent failed")))
 	{
 		SetUpBoneMap(HandMesh, BoneMap);
-		GripBoneId = HandMesh->SkeletalMesh->RefSkeleton.FindBoneIndex(GripBoneName);
+		GripBoneId = HandMesh->GetSkinnedAsset()->GetRefSkeleton().FindBoneIndex(GripBoneName);
 		OnInitializeMesh.Broadcast(this);
 	}
 }
@@ -248,7 +254,7 @@ void UCameraHandInput::UpdateSkeleton()
 	else if (bHadCustomGestureLastFrame)
 	{
 		// reset the grip bone
-		auto&& Pose = HandMesh->SkeletalMesh->RefSkeleton.GetRefBonePose();
+		auto&& Pose = HandMesh->GetSkinnedAsset()->GetRefSkeleton().GetRefBonePose();
 		if (ensureMsgf(Pose.IsValidIndex(GripBoneId), TEXT("GripBoneId is %i"), GripBoneId))
 		{
 			HandMesh->BoneSpaceTransforms[GripBoneId] = Pose[GripBoneId];

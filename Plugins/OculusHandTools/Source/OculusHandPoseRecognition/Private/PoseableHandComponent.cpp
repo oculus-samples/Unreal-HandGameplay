@@ -5,7 +5,7 @@
 
 void UPoseableHandComponent::BeginPlay()
 {
-	if (SkeletalMesh)
+	if (GetSkinnedAsset() != nullptr)
 	{
 		bCustomPoseableHandMesh = true;
 	}
@@ -54,7 +54,7 @@ void UPoseableHandComponent::UpdateBonePose(EOculusXRBone Bone, ERecognizedBone 
 
 	if (bCustomPoseableHandMesh && BoneNameMappings.Contains(Bone))
 	{
-		auto const MappedBoneIndex = SkeletalMesh->GetRefSkeleton().FindBoneIndex(BoneNameMappings[Bone]);
+		auto const MappedBoneIndex = GetSkinnedAsset()->GetRefSkeleton().FindBoneIndex(BoneNameMappings[Bone]);
 		if (MappedBoneIndex != INDEX_NONE)
 		{
 			BoneIndex = MappedBoneIndex;
