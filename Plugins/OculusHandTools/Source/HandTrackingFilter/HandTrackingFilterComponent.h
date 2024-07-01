@@ -28,30 +28,30 @@ struct HANDTRACKINGFILTER_API FHandTrackingFilterCalculatedData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	FVector Acceleration;
+	FVector Acceleration = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadOnly)
-	float AccelerationScalar;
+	float AccelerationScalar{};
 
 	UPROPERTY(BlueprintReadOnly)
-	float AngularVelocityScalar;
+	float AngularVelocityScalar{};
 
 	UPROPERTY(BlueprintReadOnly)
-	float CameraDistance;
+	float CameraDistance{};
 
 	UPROPERTY(BlueprintReadOnly)
-	float Distance;
+	float Distance{};
 
 	UPROPERTY(BlueprintReadOnly)
-	FVector Velocity;
+	FVector Velocity = FVector::ZeroVector;
 
 	/// hand confidence information
 	UPROPERTY(BlueprintReadOnly)
-	EHandTrackingDataQuality QualityOverride;
+	EHandTrackingDataQuality QualityOverride{};
 
 	/// if the data should be ignored
 	UPROPERTY(BlueprintReadOnly)
-	bool BadData;
+	bool BadData{};
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

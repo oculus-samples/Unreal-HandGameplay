@@ -40,11 +40,11 @@ struct OCULUSHANDPOSERECOGNITION_API FHandGesture
 
 	/** Tolerance (in seconds) for intermediate poses that do not match the sequence. */
 	UPROPERTY(Category = "Hand Gesture", EditAnywhere, BlueprintReadWrite)
-	float MaxTransitionTime;
+	float MaxTransitionTime{};
 
 	/** Is this gesture representing a looping series of poses? (e.g. waving) */
 	UPROPERTY(Category = "Hand Gesture", EditAnywhere, BlueprintReadWrite)
-	bool bIsLooping;
+	bool bIsLooping{};
 
 	/** Series of poses as a string. */
 	UPROPERTY(Category = "Hand Gesture", EditAnywhere, BlueprintReadWrite)

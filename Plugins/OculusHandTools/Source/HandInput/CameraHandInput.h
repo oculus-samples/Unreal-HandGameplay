@@ -42,16 +42,16 @@ struct HANDINPUT_API FHandBoneMapping
 	FName BoneName;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient)
-	int BoneId;
+	int BoneId{};
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	EOculusXRBone MappedBone;
+	EOculusXRBone MappedBone{};
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FQuat RotationOffset = FQuat::Identity;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	EHandDigit Digit;
+	EHandDigit Digit{};
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient)
 	FTransform ReferenceTransform;
