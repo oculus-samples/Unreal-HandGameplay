@@ -241,7 +241,7 @@ void FHandGesture::DumpGestureState(int GestureIndex, UHandPoseRecognizer const*
 	for (auto const& TimedPose : TimedPoses)
 	{
 		UE_LOG(LogHandPoseRecognition, Display, TEXT(" %c %d %8s[%d] %05.3f - %05.3f"),
-			CurrentStep==Step ? '>' : ' ', Step,
+			CurrentStep==Step ? TEXT('>') : TEXT(' '), Step,
 			*(HandPoseRecognizer->Poses[TimedPose.PoseIndex].PoseName),
 			TimedPose.PoseIndex,
 			TimedPose.StepFirstTime,
