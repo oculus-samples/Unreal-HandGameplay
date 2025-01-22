@@ -59,6 +59,8 @@ void UHandTrackingFilterComponent::BeginPlay()
 void UHandTrackingFilterComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	UOculusXRInputFunctionLibrary::HandMovementFilter.RemoveAll(this);
+
+	Super::EndPlay(EndPlayReason);
 }
 
 EHandTrackingDataQuality UHandTrackingFilterComponent::GetDataQualityOverride() const

@@ -1,5 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class OculusUtils : ModuleRules
@@ -16,12 +17,7 @@ public class OculusUtils : ModuleRules
 		);
 
 
-		PrivateIncludePaths.AddRange(
-			new string[]
-			{
-				// ... add other private include paths required here ...
-			}
-		);
+		PrivateIncludePaths.Add(Path.Combine(GetModuleDirectory("OculusXRHMD"), "Private"));
 
 
 		PublicDependencyModuleNames.AddRange(
@@ -52,14 +48,6 @@ public class OculusUtils : ModuleRules
 			PrivateDependencyModuleNames.Add("DetailCustomizations");
 			PrivateDependencyModuleNames.Add("ToolWidgets");
 		}
-
-
-		DynamicallyLoadedModuleNames.AddRange(
-			new string[]
-			{
-				// ... add any modules that your module loads dynamically here ...
-			}
-		);
 
 		bLegacyParentIncludePaths = true;
 	}

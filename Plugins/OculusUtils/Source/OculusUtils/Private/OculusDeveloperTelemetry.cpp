@@ -2,7 +2,7 @@
 
 #include "OculusDeveloperTelemetry.h"
 
-#include "OculusXRHMD/Private/OculusXRHMDModule.h"
+#include "OculusXRHMDModule.h"
 #include "Widgets/Input/SHyperlink.h"
 #include "Widgets/Text/SRichTextBlock.h"
 
