@@ -3,6 +3,7 @@
 #include "HandGrabbingComponent.h"
 
 #include "Interactable.h"
+#include "Engine/OverlapResult.h"
 
 AInteractable* UHandGrabbingComponent::TryGrab(FTransform GrabTransform)
 {

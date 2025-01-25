@@ -49,5 +49,7 @@ public class OculusThrowAssist  : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
 	}
 }

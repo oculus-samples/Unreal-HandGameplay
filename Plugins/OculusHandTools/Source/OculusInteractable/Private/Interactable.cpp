@@ -23,7 +23,7 @@ void AInteractable::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	while (Selectors.Num() > 0)
 	{
-		auto Selector = Selectors.Pop(false);
+		auto Selector = Selectors.Pop(EAllowShrinking::No);
 		Selector->SetSelectedInteractable(nullptr, false); // Remove with no notification.
 	}
 

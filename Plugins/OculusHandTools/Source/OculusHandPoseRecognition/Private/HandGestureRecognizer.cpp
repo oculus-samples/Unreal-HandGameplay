@@ -137,7 +137,7 @@ bool UHandGestureRecognizer::GetRecognizedHandGesture(
 		return false;
 	}
 
-	Index = CompletedGestures.Pop(false);
+	Index = CompletedGestures.Pop(EAllowShrinking::No);
 	Name = Gestures[Index].GestureName;
 	GestureDirection = Gestures[Index].GetGestureDirection();
 	GestureOuterDuration = Gestures[Index].ComputeOuterDuration();
