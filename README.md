@@ -4,7 +4,7 @@
 
 This project contains reusable components based on the most robust hand tracking mechanics from [First Steps with Hand Tracking](https://www.oculus.com/experiences/quest/3974885535895823/?locale=en_US) and [Tiny Castles](https://www.oculus.com/experiences/quest/3647163948685453/?locale=en_US).
 
-You can try the showcase for yourself on Quest [here](https://www.oculus.com/experiences/quest/4232440213539049/).
+You can try the showcase for yourself on the [Horizon Store](https://www.meta.com/experiences/4232440213539049/).
 
 This codebase is available both as a reference and as a template for multiplayer VR games. All code and assets are under the license found [here](LICENSE) unless otherwise specified.
 
