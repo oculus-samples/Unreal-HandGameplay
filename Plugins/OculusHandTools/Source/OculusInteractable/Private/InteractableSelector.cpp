@@ -36,12 +36,12 @@ AInteractableSelector::AInteractableSelector()
 
 #if WITH_EDITORONLY_DATA
 	ArrowComponent = CreateEditorOnlyDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
-	ArrowComponent->SetupAttachment(RootComponent);
 
 	if (!IsRunningCommandlet())
 	{
 		if (ArrowComponent)
 		{
+			ArrowComponent->SetupAttachment(RootComponent);
 			ArrowComponent->ArrowColor = FColor(128, 92, 207);
 			ArrowComponent->ArrowSize = 1.0f;
 			ArrowComponent->bIsScreenSizeScaled = true;
