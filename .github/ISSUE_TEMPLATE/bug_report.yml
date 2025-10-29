@@ -1,0 +1,61 @@
+name: 🐛 Bug Report
+description: Report a reproducible bug or regression.
+title: '[BUG] '
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to report an issue!
+  - type: input
+    id: version
+    attributes:
+      label: Unreal Engine version
+      placeholder: 5.3.0
+    validations:
+      required: true
+  - type: dropdown
+    id: meta-fork-unreal
+    attributes:
+      label: Using the Meta fork of Unreal Engine?
+      options:
+        - Yes, using the Meta fork
+        - No, using the standard Epic build
+    validations:
+      required: true
+  - type: checkboxes
+    id: where
+    attributes:
+      label: Where does the issue occur?
+      options:
+        - label: In Unreal Editor
+          required: false
+        - label: In Quest builds
+          required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: The list of steps that reproduce the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        For in-editor bugs, paste the logs from the "Output Log" window in the Unreal Editor.
+        For on-device Quest bugs, paste the output of `adb logcat -s "UE"`
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional info
+      description: Please provide screenshots, a video, or any other relevant information.
