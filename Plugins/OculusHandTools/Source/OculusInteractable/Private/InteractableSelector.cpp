@@ -34,7 +34,7 @@ AInteractableSelector::AInteractableSelector()
 	// Root
 	this->RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
-#if WITH_EDITORONLY_DATA
+#if WITH_EDITOR
 	ArrowComponent = CreateEditorOnlyDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 
 	if (!IsRunningCommandlet())
@@ -47,7 +47,7 @@ AInteractableSelector::AInteractableSelector()
 			ArrowComponent->bIsScreenSizeScaled = true;
 		}
 	}
-#endif
+#endif //WITH_EDITOR
 }
 
 void AInteractableSelector::BeginPlay()
