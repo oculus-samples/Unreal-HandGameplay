@@ -75,7 +75,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static bool ApplyPoseToMesh(
 		FString PoseString, UPoseableMeshComponent* HandMesh,
-		TArray<FHandBoneMapping> const& BoneMappings);
+		TArray<FHandBoneMapping> const& BoneMappings, bool IsLeft);
 
 	UFUNCTION(BlueprintCallable)
 	static void SetUpBoneMap(UPoseableMeshComponent* HandMesh, UPARAM(ref) TArray<FHandBoneMapping>& BoneMap);
@@ -224,7 +224,7 @@ private:
 	float TimeWhenTrackingLastGained = -1;
 
 	void FilterBoneRotation(EOculusXRBone Bone, FQuat LastRotation, FQuat& Rotation);
-	static void SetBoneRotation(UPoseableMeshComponent* HandMesh, FHandBoneMapping BoneMapping, FQuat BoneRotation);
+	static void SetBoneRotation(UPoseableMeshComponent* HandMesh, FHandBoneMapping BoneMapping, FQuat BoneRotation, bool IsLeft);
 	void UpdateSkeleton();
 
 	bool bInputIsInitialized = false;

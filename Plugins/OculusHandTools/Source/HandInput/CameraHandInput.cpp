@@ -5,10 +5,20 @@
 #include "OculusXRInputFunctionLibrary.h"
 #include "Components/PoseableMeshComponent.h"
 #include "HandPose.h"
+#include "IXRTrackingSystem.h"
+#include "OculusXRHandComponent.h"
 #include "QuatUtil.h"
 
 #define ConvertBoneToFinger UOculusXRInputFunctionLibrary::ConvertBoneToFinger
 #define GetFingerTrackingConfidence UOculusXRInputFunctionLibrary::GetFingerTrackingConfidence
+
+namespace {
+	bool IsOpenXRSystem()
+	{
+		const FName SystemName(TEXT("OpenXR"));
+		return GEngine->XRSystem.IsValid() && (GEngine->XRSystem->GetSystemName() == SystemName);
+	}
+}
 
 UCameraHandInput::UCameraHandInput(FObjectInitializer const& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -217,13 +227,17 @@ void UCameraHandInput::FilterBoneRotation(EOculusXRBone Bone, FQuat LastRotation
 }
 
 void UCameraHandInput::SetBoneRotation(UPoseableMeshComponent* HandMesh, FHandBoneMapping BoneMapping,
-	FQuat BoneRotation)
+	FQuat BoneRotation, bool IsLeft)
 {
 	if (BoneMapping.BoneId == -1 || HandMesh == nullptr || HandMesh->BoneSpaceTransforms.Num() <= BoneMapping.BoneId)
 	{
 		return;
 	}
-
+	if (IsOpenXRSystem() && BoneMapping.BoneId == 0)
+	{
+		BoneMapping.RotationOffset = IsLeft ? LeftHandRootFixupRotationOpenXR : RightHandRootFixupRotationOpenXR;
+	}
+	
 	BoneRotation = BoneMapping.RotationOffset * BoneRotation;
 	BoneRotation.Normalize();
 	HandMesh->BoneSpaceTransforms[BoneMapping.BoneId] = FTransform(
@@ -307,7 +321,8 @@ void UCameraHandInput::UpdateSkeleton()
 			}
 
 			auto const BoneRotation = BoneRotations[BoneMapping.MappedBone];
-			SetBoneRotation(HandMesh, BoneMapping, BoneRotation);
+			
+			SetBoneRotation(HandMesh, BoneMapping, BoneRotation, GetHand() == EOculusXRHandType::HandLeft);
 		}
 	}
 
@@ -482,7 +497,7 @@ float UCameraHandInput::GetThumbUpAxis()
 
 bool UCameraHandInput::ApplyPoseToMesh(
 	FString PoseString, UPoseableMeshComponent* HandMesh,
-	TArray<FHandBoneMapping> const& BoneMappings)
+	TArray<FHandBoneMapping> const& BoneMappings, bool IsLeft)
 {
 	auto BoneToRecognizedBone = [](EOculusXRBone Bone)
 	{
@@ -523,7 +538,7 @@ bool UCameraHandInput::ApplyPoseToMesh(
 		if (Bone != static_cast<ERecognizedBone>(-1))
 		{
 			auto Rotator = Bone == Wrist ? FRotator::ZeroRotator : Pose.GetRotator(Bone);
-			SetBoneRotation(HandMesh, Mapping, Rotator.Quaternion());
+			SetBoneRotation(HandMesh, Mapping, Rotator.Quaternion(), IsLeft);
 		}
 	}
 
@@ -533,7 +548,7 @@ bool UCameraHandInput::ApplyPoseToMesh(
 
 bool UCameraHandInput::SetPose(FString PoseString)
 {
-	if (ApplyPoseToMesh(PoseString, HandMesh, BoneMap))
+	if (ApplyPoseToMesh(PoseString, HandMesh, BoneMap, GetHand() == EOculusXRHandType::HandLeft))
 	{
 		bHasCustomGesture = true;
 		return true;

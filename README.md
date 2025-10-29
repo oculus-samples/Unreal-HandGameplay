@@ -83,3 +83,27 @@ You can find a detailed breakdown of how the mechanics are implemented [here](./
 ## 20 December 2023 Update
 
 We updated the project to UE5.3.
+
+## March 2025 Update
+
+We updated the project to use OpenXR from Epic with meta vendor extensions.
+Please note, you can still use the OVRPlugin, but you'll need to update the Grab Poses on:
+
+* Content/HandGameplay/Probs/Blocks/InteractableBrick
+* Content/HandGameplay/Probs/RingWeapon/InteractableArtifactHandle
+
+Example for InteractableBrick:
+
+* Change relative Hand Transform left to: ``LOC X1.623 Y12.178 Z8.067 ROT W0.160 X0.189 Y-0.832 Z-0.497``
+* Change relative Hand Transform right to: ``LOC X5.690 Y-10.448 Z-8.640 ROT W0.840 X0.534 Y0.064 Z0.068``
+
+Example for InteractableArtifactHandle:
+
+* Change relative Hand Transform left to: ``LOC X1.094 Y6.294 Z11.635 ROT W0.101 X-0.548 Y-0.830 Z-0.009``
+* Change relative Hand Transform right to: ``LOC X-0.519 Y-6.451 Z-12.047 ROT W0.859 X0.053 Y0.058 Z-0.506``
+
+Best way to get new HandTransforms:
+
+* Open HansCharacterHandsState from OculusHandTools/Content/Hands/
+* Reconnect the Blueprint-flow-nodes
+* This will output the location of your hand when grabbing an object in the correct format for copy and paste.
