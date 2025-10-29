@@ -2,11 +2,16 @@
 
 #include "OculusDeveloperTelemetry.h"
 
-#include "OculusXRHMDModule.h"
+#include "OculusXRHMD/Private/OculusXRHMDModule.h"
 #include "Widgets/Input/SHyperlink.h"
 #include "Widgets/Text/SRichTextBlock.h"
 
-#define PRIVACY_POLICY_URL "https://www.oculus.com/legal/privacy-policy/"
+#ifdef OCULUS_XR_TELEMETRY
+#include "OculusXRTelemetry.h"
+#endif
+
+
+#define PRIVACY_POLICY_URL "https://www.meta.com/legal/quest/privacy-policy/"
 
 #define LOCTEXT_NAMESPACE "FOculusUtilsModule"
 
@@ -25,8 +30,8 @@ void UOculusDeveloperTelemetry::PostEditChangeProperty(FPropertyChangedEvent& Pr
 auto MakeTelemetryTextBlock(float Width)
 {
 	auto const TelemetryMessage = LOCTEXT("EnableTelemetryMessage",
-		"Enabling telemetry will transmit data to Oculus about your usage of its samples and tools. "
-		"This information is used by Oculus to improve our products and better serve our developers. For more information, go to this url: "
+		"Enabling telemetry will transmit data to Meta about your usage of its samples and tools. "
+		"This information is used by Meta to improve our products and better serve our developers. For more information, go to this url: "
 		"<a id=\"link\" href=\"" PRIVACY_POLICY_URL "\">" PRIVACY_POLICY_URL "</>");
 	
 	auto const OnPrivacyPolicyClicked = FSlateHyperlinkRun::FOnClick::CreateLambda(
@@ -50,7 +55,11 @@ void UOculusDeveloperTelemetry::SendEvent(const char* eventName, const char* par
 {
 	OnFlush.AddLambda([eventName, param, source]
 	{
+#ifdef OCULUS_XR_TELEMETRY
+		OculusXRTelemetry::SendEvent(eventName, param, source);
+#else
 		FOculusXRHMDModule::GetPluginWrapper().SendEvent2(eventName, param, source);
+#endif
 	});
 	Flush();
 }
@@ -60,17 +69,19 @@ void UOculusDeveloperTelemetry::Flush()
 #if WITH_EDITOR
 	if (bHasPrompted == false)
 	{
-		auto const Title = LOCTEXT("EnableTelemetryTitle", "Enable Oculus Telemetry");
+		auto const Title = LOCTEXT("EnableTelemetryTitle", "Enable Meta Telemetry");
 
-		auto const Return = TSharedRef<SCustomDialog>(SNew(SCustomDialog).
+		TSharedRef<SCustomDialog> CustomDialog = SNew(SCustomDialog).
 			Title(Title).
-			Content() [
+			Content()[
 				MakeTelemetryTextBlock(400)
 			].
 			Buttons({
 				SCustomDialog::FButton(EnableText),
 				SCustomDialog::FButton(OptOutText),
-			}))->ShowModal();
+				});
+		
+		auto const Return = CustomDialog->ShowModal();
 
 		bHasPrompted = true;
 		bIsEnabled = Return == 0;
@@ -79,9 +90,16 @@ void UOculusDeveloperTelemetry::Flush()
 		SaveConfig();
 	}
 
-	if (bIsEnabled && FOculusXRHMDModule::GetPluginWrapper().SendEvent2)
+	if (bIsEnabled)
 	{
-		FOculusXRHMDModule::GetPluginWrapper().SetDeveloperMode(true);
+#ifdef OCULUS_XR_TELEMETRY
+		OculusXRTelemetry::SetDeveloperTelemetryConsent(true);
+#else
+		if (FOculusXRHMDModule::GetPluginWrapper().SetDeveloperMode)
+		{
+			FOculusXRHMDModule::GetPluginWrapper().SetDeveloperMode(true);
+		}
+#endif
 		OnFlush.Broadcast();
 		OnFlush.Clear();
 	}
