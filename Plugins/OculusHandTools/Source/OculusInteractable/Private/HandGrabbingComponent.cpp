@@ -45,18 +45,13 @@ AInteractable* UHandGrabbingComponent::TryGrab(FTransform GrabTransform)
 
 			if (InteractableRoot != nullptr)
 			{
-				InteractableRoot->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-
-				if (auto GrabbedPrimitive = Cast<UPrimitiveComponent>(InteractableRoot))
+				auto GrabbedPrimitive = Cast<UPrimitiveComponent>(ClosestInteractable->GetRootComponent());
+				if(GrabbedPrimitive != nullptr && GrabbedPrimitive->IsSimulatingPhysics())
 				{
-					if (GrabbedPrimitive->IsSimulatingPhysics())
-					{
-						bGrabbedActorHasPhysics = true;
-						GrabbedPrimitive->SetSimulatePhysics(false);
-					}
+					bGrabbedActorHasPhysics = true;
+					ClosestInteractable->SetInteractablePhysicsSimulation(false);
 				}
 
-				InteractableRoot->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
 				ClosestInteractable->Interaction1();
 
 				GrabbedActor = ClosestInteractable;
@@ -75,16 +70,9 @@ AInteractable* UHandGrabbingComponent::TryRelease(bool bReenablePhysics)
 	{
 		GrabbedActor->OnDestroyed.RemoveDynamic(this, &UHandGrabbingComponent::HandleHeldActorDestroyed);
 
-		auto InteractableRoot = GrabbedActor->GetRootComponent();
-		if (InteractableRoot != nullptr)
+		if(bReenablePhysics && bGrabbedActorHasPhysics)
 		{
-			InteractableRoot->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-
-			auto GrabbedPrimitive = Cast<UPrimitiveComponent>(InteractableRoot);
-			if (bReenablePhysics && bGrabbedActorHasPhysics && GrabbedPrimitive != nullptr)
-			{
-				GrabbedPrimitive->SetSimulatePhysics(true);
-			}
+			GrabbedActor->SetInteractablePhysicsSimulation(true);
 		}
 
 		GrabbedActor = nullptr;
