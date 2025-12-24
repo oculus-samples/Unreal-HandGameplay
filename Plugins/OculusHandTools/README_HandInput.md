@@ -2,18 +2,18 @@
 
 ## Grabbing (with Pose Override)
 
-The core implementation of grabbing is in the *CameraHandInput* component. This component implements methods *IsGripping* and *IsPinching* to detect a variety of grab poses.
+The *CameraHandInput* component handles grabbing. It uses the *IsGripping* and *IsPinching* methods to detect various grab poses.
 
-The rest of the implementation can be seen in *HandsCharacterHandState* in the "Grabbing", "Final attachment" and "Pose" sections of its event graph.
+Additional logic appears in *HandsCharacterHandState* under the "Grabbing," "Final attachment," and "Pose" sections of its event graph.
 
-While an object is grabbed, the hand pose must be overridden in order for the hand to stay wrapped around the object in a sensible way. To accomplish this, you must provide the component with a "Bone Map" so that it can apply poses to the hand mesh.
+To keep the hand wrapped naturally around a grabbed object, you must override the hand pose. Provide the component with a "Bone Map" to apply poses to the hand mesh.
 
 <img width="512" src="./Media/bonemap.png" />
 
-For an actor to be grabbable, it must be a child of the *Interactable* actor class. Within that class, you can set its grab pose properties with hand pose strings. For an example of this, look at the *InteractableBrick* class in the Hand Gameplay Showcase.
+An actor must inherit from the *Interactable* class to be grabbable. Set grab pose properties using hand pose strings within this class. For an example, see the *InteractableBrick* class in the Hand Gameplay Showcase.
 
 ## Finger Stabilization
 
-In addition, the hand skeleton is also stabilized and smoothed by the *CameraHandInput* component. You can tweak its settings (or disable the filtering completely) through its properties:
+The *CameraHandInput* component also stabilizes and smooths the hand skeleton. You can adjust or disable this filtering through its properties:
 
 <img width="512" src="./Media/camerahandinput_filtering.png" />

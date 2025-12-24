@@ -1,12 +1,12 @@
-# Oculus Hand Tools For UE4
+# Meta Quest Hand Tools For UE4
 
-## Oculus Quest Hand Tracking
+## Meta Quest Hand Tracking
 
-The Oculus Quest is the first computing platform that offers native hand tracking using its inside-out cameras.  The hand tracking API offers raw hand bone rotations, hand location and orientation, confidence levels and the recognition of a few higher-level hand poses in the form of pinch strength and system poses.
+The Meta Quest (Oculus) is the first platform to offer native hand tracking using inside-out cameras. Its hand tracking API provides raw hand bone rotations, hand location and orientation, confidence levels, and recognition of some higher-level hand poses like pinch strength and system poses.
 
-To help the Oculus developer get started with raw hand bone rotations, the Oculus DevTech team has developed the Oculus Hand Tools plugin for UE4.  It enables many common hand tracking mechanics and utilities.
+To help developers start with raw hand bone rotations, the Meta Quest DevTech team created the Meta Quest Hand Tools plugin for UE4. It supports many common hand tracking mechanics and utilities.
 
-Many of the mechanics are implemented in blueprints in the [Content](./Content/) folder. You can find more information about them below. There are also mechanics and utilities implemented in the included C++ modules, which you can find here:
+Most mechanics are implemented as blueprints in the [Content](./Content/) folder. More details follow below. Additional mechanics and utilities are available in these C++ modules:
 
 - [HandInput module](./README_HandInput.md)
 - [HandPoseRecognition module](./README_HandPoseRecognition.md)
@@ -17,29 +17,29 @@ Many of the mechanics are implemented in blueprints in the [Content](./Content/)
 
 ## Mechanics Implementations
 
-The Content folder contains utilities for implementing hand tracking gameplay mechanics. You can see examples of their use in the *Oculus Hand Gameplay Showcase*.
+The Content folder contains utilities for hand tracking gameplay mechanics. Examples appear in the *Hand Gameplay Showcase*.
 
-All of these mechanics are integrated into the *HandsCharacterHandState* component. This component is instantiated in the construction script for *HandsCharacterBase*, setting up references to all of the relevant components on the actor.
+All mechanics integrate into the *HandsCharacterHandState* component. This component is created in the construction script of *HandsCharacterBase*, which sets up references to all relevant actor components.
 
-The simplest way to integrate these mechanics into your own project is to create a new blueprint class with *HandsCharacterBase* as its parent. You can see an example of this in the showcase's *HandsCharacter* class.
+To add these mechanics to your project, create a new blueprint class with *HandsCharacterBase* as its parent. The showcase’s *HandsCharacter* class demonstrates this.
 
 ### Throwing
 
-In the *HandsCharacterHandState* class (in the "Throwing" section of its event graph), you will find the implementation of throwing. In its *Throw with Assist* function, it uses the *Get Throw Vector* method of the *ThrowingComponent*. That component tracks the position of the hand over a short period of time in order to infer an accurate and predictable velocity for the thrown object.
+The *HandsCharacterHandState* class implements throwing in the "Throwing" section of its event graph. Its *Throw with Assist* function calls the *Get Throw Vector* method of the *ThrowingComponent*. This component tracks hand position over a short time to calculate an accurate, predictable velocity for thrown objects.
 
 ### Punching
 
-Punching is a surprisingly simple and fun mechanic using hand tracking. In the "Fist / punching" section of the *HandsCharacterHandState* event graph, you can see that a collision sphere on the hand is enabled only while the hand is gripping (in a fist pose) and no object is currently grabbed.
+Punching is a simple, fun mechanic using hand tracking. In the "Fist / punching" section of the *HandsCharacterHandState* event graph, a collision sphere on the hand activates only when the hand forms a fist and no object is grabbed.
 
-An example of an "punchable" object is in the Hand Gameplay Showcase in the *TetherBallBP* class.
+The *TetherBallBP* class in the Hand Gameplay Showcase provides an example of a "punchable" object.
 
 ### Teleportation
 
-Utilizing the *InteractableSelector* actors from the *OculusInteractable* module (see above), a simple teleportation system can be implemented. This is done fairly simply: In the "Grabbing" section of the *HandsCharacterHandState* event graph, when a grab fails, it falls back to checking for a selected teleporter and teleporting the player to it. The teleporter selection itself is in the "Selection" section of the same graph.
+You can implement a simple teleportation system using *InteractableSelector* actors from the *OculusInteractable* module. In the "Grabbing" section of the *HandsCharacterHandState* event graph, if a grab fails, it checks for a selected teleporter and teleports the player there. Teleporter selection happens in the "Selection" section of the same graph.
 
-In order to limit selection to teleporters, the *TeleportSelector* actor is used rather than the standard *InteractableSelector*.
+To restrict selection to teleporters, use the *TeleportSelector* actor instead of the standard *InteractableSelector*.
 
-Note that this requires the following in your project's *DefaultEngine.ini*:
+Add this to your project's *DefaultEngine.ini*:
 
 ```ini
 [/Script/Engine.CollisionProfile]
@@ -48,11 +48,11 @@ Note that this requires the following in your project's *DefaultEngine.ini*:
 
 ### Pushing Buttons
 
-The *PushButtonBaseBP* class implements logic for a button that can be pushed with the player's pointer finger. The button moves with the finger and makes clicking sounds when pushed in all the way. You can set up the response to the button press using the *OnButtonPress* event.
+The *PushButtonBaseBP* class handles buttons pushed by the player’s pointer finger. The button moves with the finger and plays clicking sounds when fully pressed. Use the *OnButtonPress* event to define the button’s response.
 
-You may notice that in the Box component, the collision channel is set to *FingerTip*. Looking at the *HandsCharacterBase*, you'll see the *RightFingerTip* component uses this same collision channel.
+The button’s Box component uses the *FingerTip* collision channel. The *RightFingerTip* component in *HandsCharacterBase* uses the same channel.
 
-Note that buttons require the following in your project's *DefaultEngine.ini*:
+Add this to your project's *DefaultEngine.ini*:
 
 ```ini
 [/Script/Engine.CollisionProfile]
@@ -61,16 +61,16 @@ Note that buttons require the following in your project's *DefaultEngine.ini*:
 
 ### Two-Handed Aiming
 
-In making *First Steps with Hands*, we discovered that the two handed rifle was very stable and fulfilling to aim with. Check out *InteractableTwoHandedArtefact* as an example implementation of this sort of aiming device that can be implemented using the grabbing system.
+During *First Steps with Hands*, we found the two-handed rifle very stable and satisfying to aim. The *InteractableTwoHandedArtefact* class shows how to implement this aiming style using the grabbing system.
 
 ### Example Hands for Tutorials
 
 <img width="256" src="./Media/tutorialhand.png" />
 
-The *TutorialHand* actor can be used to display hand poses to the player. You can set the pose by setting the [*Pose String*](./README_HandPoseRecognition.md#pose-strings) property.
+Use the *TutorialHand* actor to display hand poses to players. Set the pose via the [*Pose String*](./README_HandPoseRecognition.md#pose-strings) property.
 
 <img width="256" src="./Media/tutorialhand_details.png" />
 
 ## Future Improvements
 
-We hope that this showcase will inspire your own work with hand tracking. The team is eager to see what you will end up doing with it and how you will improve it.  We are still working on ways for you to reach out back to us, so that you can share your work with the rest of the Oculus community.
+We hope this showcase inspires your hand tracking projects. The team looks forward to seeing your work and improvements. We are developing ways for you to share your projects with the Meta Quest community.

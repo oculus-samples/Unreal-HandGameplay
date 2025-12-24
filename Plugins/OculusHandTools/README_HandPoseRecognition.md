@@ -1,18 +1,18 @@
 # The OculusHandPoseRecognition Module
 
-This module contains two [USceneComponent](https://docs.unrealengine.com/en-US/API/Runtime/Engine/Components/USceneComponent/index.html) subclasses that can be configured to recognize specific hand poses &ndash; described as a set of relative hand bone angles &ndash; and hand gestures &ndash; described as sequences of hand poses.  It also provides a library of useful blueprint utility nodes.
+This module includes two [USceneComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/USceneComponent?application_version=5.6) subclasses. They recognize specific hand poses—defined by relative hand bone angles—and hand gestures—defined as sequences of hand poses. It also provides a library of useful blueprint utility nodes.
 
 ## 1. Hand Pose Recognizer Component
 
-The [UHandPoseRecognizer](../Source/OculusHandPoseRecognition/Public/HandPoseRecognizer.h) class is the core of our hand recognition system.  It regularly polls the [Oculus Hands API](../../../../../Engine/Plugins/Runtime/Oculus/OculusVR/Source/OculusInput/Public/OculusInputFunctionLibrary.h) to record hand bone information when it can be reliably assessed.  Wrist bone information is acquired from the motion controller component that the pose recognizer is attached to on the player's VR character.
+The [UHandPoseRecognizer](./Source/OculusHandPoseRecognition/Public/HandPoseRecognizer.h) class is the core of the hand recognition system. It regularly polls the [Oculus Hands API](../../../../../Engine/Plugins/Runtime/Oculus/OculusVR/Source/OculusInput/Public/OculusXRInputFunctionLibrary.h) to record hand bone data when reliable. Wrist bone data comes from the motion controller component attached to the player's VR character.
 
 <img width="256" src="./Media/recognizer_attachment.png" alt="Recognizer attached to controller." />
 
-There can be multiple recognizers per hand, each with its own set of hand poses to recognize.  The main reason to group hand poses into one recognizer is when they are mutually exclusive from one another.  In our showcase, we provide a recognizer for American Sign Language numbers and another for letters.  In actual ASL, there is a way to distinguish the letter 'O' and the number '0', but in our example we have limited ourselves to static hand poses and having them recognized in separate recognizers allows us to recognize both in parallel.
+You can use multiple recognizers per hand, each with its own set of hand poses. Group poses into one recognizer when they are mutually exclusive. For example, our showcase uses one recognizer for American Sign Language numbers and another for letters. Although ASL distinguishes the letter 'O' from the number '0', our example uses static hand poses recognized by separate recognizers to detect both simultaneously.
 
 ### Pose Strings
 
-What each recognizer can recognize is described as a set of bone angles.  Here's the thumbs-up pose description for the left hand.
+Each recognizer defines what it can recognize as a set of bone angles. Here is the thumbs-up pose for the left hand:
 
     L T0-52-18+51 T1+13-8+30 T2+7-9-10 T3-10+21+8
       I1+6-72+1 I2-3-108+1 I3+1-55-3
@@ -21,163 +21,165 @@ What each recognizer can recognize is described as a set of bone angles.  Here's
       P0+15-6-25 P1+8-88+4 P2-8-94-7 P3-4-54+2
       W+81+0+0
 
-The description starts with 'L' or 'R' for the left and right hands.  It is followed by an ordered list of hand bones starting with letters 'T' (Thumb), 'I' (Index), 'M' (Middle), 'R' (Ring), 'P' (Pinky) and finally 'W' (Wrist). All bones, except the wrist, are followed by a bone index starting at 0 for the thumb and pinky, and 1 for the other three fingers.
+The description starts with 'L' or 'R' for left or right hand. It lists hand bones in order: 'T' (Thumb), 'I' (Index), 'M' (Middle), 'R' (Ring), 'P' (Pinky), and 'W' (Wrist). All bones except the wrist include a bone index starting at 0 for thumb and pinky, and 1 for the other fingers.
 
-Angles are described by three signed numbers for pitch, yaw and roll in that order.  All angles are expressed in degrees with whole numbers.
+Angles are three signed numbers for pitch, yaw, and roll, in degrees.
 
-You can easily generate new pose strings by using the logger described in [Using a Hand Pose Recognizer](#using-a-hand-pose-recognizer).
+You can generate new pose strings using the logger described in [Using a Hand Pose Recognizer](#using-a-hand-pose-recognizer).
 
-### Computing Distance (a.k.a. Error) To Hand Pose
+### Computing Distance (Error) to Hand Pose
 
-The way a hand is matched to a reference pose starts with the computation of the sum of the squares of all angular differences.  The closer you get to zero the better your match is.  What constitutes a good match is left to your own assessment and we will cover that in the next section on configuration.
+Matching a hand to a reference pose starts by summing the squares of all angular differences. A lower sum means a better match. You decide what error value counts as a good match; this is covered in the next section.
 
-As we have experimented with the hand pose recognition, we quickly realized that there are situations where it was useful to ignore some bones.  For instance, when we ask people to perform a "gun" hand pose, everybody uses the index to represent the gun barrel, but some people use both the index and the middle fingers.  To have only one pose match both gun poses, we can simply ignore the middle finger.  This is as simple as removing the bones that you want to ignore from the reference hand pose.
+Sometimes, you may want to ignore some bones. For example, in a "gun" pose, some people use only the index finger, others use both index and middle fingers. To match both with one pose, remove the middle finger bones from the reference pose.
 
-Sometimes, especially for the wrist, what you want is to ignore only the pitch, yaw and/or roll of a bone.  An example of that is the thumbs-up pose shown above.  You do not need to distinguish between a thumbs-up that is facing forward or sideways, you only need to know if the thumb is facing up or down.  You can ignore the pitch, yaw or roll by using +0.  To recognize an angle that is near zero, use +1 or -1.
+You can also ignore specific angles (pitch, yaw, or roll) of a bone. For example, in the thumbs-up pose, you only need to know if the thumb points up or down, not its facing direction. Use +0 to ignore an angle. Use +1 or -1 to recognize angles near zero.
 
-In addition to that, we have realized that for some bones are more (or less) important than others for some poses.  For that purpose, you can add between the bone identifier and the pitch/yaw/roll values a weight value.  Here's a full example that combines weights and ignores specific fingers.
+We have realized that for some bones are more (or less) important than others for some poses.  For that purpose, you can add between the bone identifier and the pitch/yaw/roll values a weight value.  Here's a full example that combines weights and ignores specific fingers:
 
     L T0*3-61+1+31 T1*3+12-8+30 T2*3+6-13-10 T3*3-10+21+8
       I1+16-22-1 I2+1-2-3 I3+3+2-2
       R1-2-77-12 R2-5-100-1 R3-4-57-1
       P0+15-6-25 P1+8-90-3 P2-5-76-8 P3-4+1+3
 
-This is the left hand "gun" pose that differs from the "gun shot" pose only because the thumb is lifted away from the index.  For that reason, the position of the thumb is very important and here we have increased its weight by a factor 3.  As discussed before, the middle finger is ignored so that we can recognize both the single and double-barrel poses with only one pattern.  The wrist is also ignored, which means that it doesn't matter which way you pointing your hand.
+This left hand "gun" pose differs from the "gun shot" pose because the thumb is lifted away from the index. The thumb's weight is increased by 3. The middle finger is ignored to match both single and double-barrel poses. The wrist is ignored, so hand orientation of which way the hand is pointed does not matter.
 
 ### Error vs Confidence Level
 
-The use of weights and the possibility of ignoring angles or whole fingers has an important effect on the error range.  In addition to that, you may be more lenient with the recognition of some poses than others.
+Weights and ignoring angles or fingers affect the error range. You may also want to be more lenient with some poses.
 
-To help normalize this, we have added the concept of confidence level. Basically, for each pose you will define the maximum error value at which you still consider that it is matching with 100% certainty.
+To normalize this, each pose defines a maximum error value for 100% confidence (error at max confidence, EAMC).
 
-As you are testing the error returned for a specific pose, you may decide that you have full confidence for any error value below 2000.  Using that error for your maximum confidence (a.k.a. error at max confidence or EAMC), any value below 2000 will correspond to a confidence level of 1.0. An error of 4000 will return a confidence level of 0.5, and so on.
+For example, if you set EAMC to 2000, any error below 2000 means full confidence (1.0). An error of 4000 corresponds to 0.5 confidence, and so on.
 
-| Error | Confidence (EAMC of 2000) |
-| ----- | ------------------------- |
-| 500   | 1.00                      |
-| 2000  | 1.00                      |
-| 3000  | 0.66                      |
-| 4000  | 0.50                      |
-| 6000  | 0.33                      |
-| 8000  | 0.25                      |
+| Error | Confidence (EAMC = 2000) |
+| ----- | ------------------------ |
+| 500   | 1.00                     |
+| 2000  | 1.00                     |
+| 3000  | 0.66                     |
+| 4000  | 0.50                     |
+| 6000  | 0.33                     |
+| 8000  | 0.25                     |
 
-While confidence levels are much easier to handle than raw errors, the latter is still needed during development to assess the EAMC.
+Confidence levels simplify handling recognition results, but raw errors remain useful during development to set EAMC.
 
 ### Configuring a Hand Pose Recognizer
 
-In the details section of a hand pose recognizer, you will find the *Hand Pose Recognition* section.
+In the hand pose recognizer's details panel, find the *Hand Pose Recognition* section.
 
 <img width="256" src="./Media/recognizer_config.png" alt="Recognizer configuration." />
 
-The *side* value must be set to recognize either the left or right hand. You can disable a recognizer by setting the side to none.
+Set the *side* value to recognize the left or right hand. Set it to none to disable the recognizer.
 
-The recognition interval is meant throttle the execution of the recognition code.  The default value of 0s makes the recognizer perform its duties every tick.
+The recognition interval throttles recognition frequency. The default 0s runs recognition every tick.
 
-The confidence floor is the minimum confidence level required for a pose to be recognized.  A default confidence floor can be defined at the recognizer level, and it can be customized for each individual pose.
+The confidence floor sets the minimum confidence required to recognize a pose. You can set a default at the recognizer level and customize it per pose.
 
-The damping factor indicates how slow we integrate hand bone updates per recognition interval.  By default we use the latest values fully every tick.  A value of 0.2 indicates that we merge 80% of the latest value with the current state.
+The damping factor controls how slowly bone updates integrate per recognition interval. By default, the latest values fully replace the current state every tick. A value of 0.2 blends 80% of the latest value with the current state.
 
-Finally, and maybe most importantly, you can configure an array of [poses](#pose-strings). There are no preset limits to the number of poses one recognizer can handle.
+You can configure an array of [poses](#pose-strings). There is no limit to the number of poses per recognizer.
 
-Each pose has a name.  That name is not required to be unique even within the same recognizer (two poses can still be distinguised by the recognized pose index, if needed).  Then you have the custom encoded pose, the custom confidence floor and the error at max confidence that were discussed in earlier sections.
+Each pose has a name, which need not be unique. You also set the encoded pose, custom confidence floor, and error at max confidence.
 
 ### Using a Hand Pose Recognizer
 
-The first blueprint node that you need to know about is the one that outputs the current hand pose as an encoded string to the output log.  In the following image you can see an example where recognizers for both hands have been wired to input events to a *Log Encoded Hand Pose* node.
+The *Log Encoded Hand Pose* blueprint node outputs the current hand pose as an encoded string to the output log. The example below shows recognizers for both hands wired to input events.
 
 <img width="256" src="./Media/log_encoded_pose.png" alt="Log hand pose." />
 
-In our case, the input events are the CTRL-L and CTRL-R keyboard events. A typical workflow is to generate a few hand poses, output them to the UE4 log window, and transfer those strings to a hand pose recognizer either as is or modified as described previously by removing bones, deactivating specific angles or adding weights.
+In this example, CTRL-L and CTRL-R keyboard events trigger logging. A typical workflow is to generate hand poses, log them, then transfer or modify the strings for use in a hand pose recognizer.
 
-The hand pose recognizer offers a blueprint node to retrieve it's current state simply called *Get Recognized Hand Pose*.
+The *Get Recognized Hand Pose* node retrieves the current recognition state.
 
 <img width="512" src="./Media/get_recognized_hand_pose.png" alt="Get recognized hand pose." />
 
-The image above is taken from the Hand Pose Showcase.  The part of the VRCharacter blueprint shown here forwards the recognition state of the recognizer of your choice to be displayed on the one of the projector slides.
+This image from the Hand Pose Showcase shows the VRCharacter blueprint forwarding the recognizer's state to display on a projector slide.
 
-When a hand pose is recognized, that is when there's at least one pose that is below the confidence floor for that pose, you will be able to receive its index, its name, how long that pose has been held (in seconds) and both the raw error and the confidence level.
+When a pose is recognized (confidence above the floor), you get its index, name, duration held (seconds), raw error, and confidence level.
 
 ## 2. Hand Gesture Recognizer Component
 
-The class that handles gesture recognition is [UHandGestureRecognizer](../Source/OculusHandPoseRecognition/Public/HandGestureRecognizer.h).
+The [UHandGestureRecognizer](./Source/OculusHandPoseRecognition/Public/HandGestureRecognizer.h) class handles gesture recognition.
 
-A gesture is defined as a sequence of hand poses.  Our implementation limits gesture recognition from the poses of exactly one hand pose recognizer, as this is likely to be the most common case.  For that reason you only need to attach the gesture recognizer to the pose recognizer that it relies on.
+A gesture is a sequence of hand poses. Our implementation recognizes gestures only from one hand pose recognizer, which is the common case. Attach the gesture recognizer to the pose recognizer it depends on.
 
 <img width="256" src="./Media/gesture_recognizer.png" alt="Gesture recognizer." />
 
-In this screenshot, the *LeftFlickSwipeGestureRecognizer* is attached to a component called *LeftFlickSwipePoseRecognizer*.  This left flick gesture is meant to have the projector move to the previous slide in the Hand Pose Showcase.  Another couple of recognizers are attached to the right hand to perform the equivalent action for going to the next slide.
+In this screenshot, *LeftFlickSwipeGestureRecognizer* attaches to *LeftFlickSwipePoseRecognizer*. This gesture moves the projector to the previous slide. Similar recognizers on the right hand move to the next slide.
 
 ### Defining a Gesture as a Sequence of Poses
 
-For our Hand Pose Showcase, we have found an interesting sci-fi movie gesture where the actor changes channel by pointing his right index and middle fingers towards the screen and then flick them left.
+In the Hand Pose Showcase, a sci-fi movie gesture changes channels by pointing the right index and middle fingers at the screen, then flicking left.
 
-We tried a few other gestures for changing slides, and we found that it was one of the easiest to learn and execute.  Let's first look at the static hand pose recognizer.
+We tested other gestures but found this one easy to learn and perform. First, the static hand pose recognizer:
 
 <img width="256" src="./Media/flick_pose.png" alt="Flick pose recognition." />
 
-We have here two poses: the one where we point at the screen and the one where we flick the hand.  Now let's look at the gesture recognizer.
+It recognizes two poses: pointing and flicking. Next, the gesture recognizer:
 
 <img width="256" src="./Media/flick_gesture.png" alt="Flick gesture recognition." />
 
-The recognition interval value is there to have a way to throttle the gesture recognition system.  By default it is executed every game tick.  The skipped frames value is a complementary way to enforce delays during gesture recognition.  It was added to experiment with precise throwing but ended up not being required.  It is likely going to be removed in a future version.
+The recognition interval throttles gesture recognition frequency. It defaults to every game tick.
 
-Here we only recognize one gesture, named "Flick", which is the transition from "Point" to "Flick".  A gesture name doesn't need to be unique.
+The skipped frames value adds delay control but is experimental and may be removed.
 
-The *Max Transition Time* value is very important.  It indicates how much time (in seconds) that we can tolerate doing something outside of the hand pose sequence.  This includes time during which the pose recognizer is not recognizing a hand pose at all.  In our example, it is configured to tolerate at most 1/5th of a second between the end of "Point" and the beginning of "Flick".
+This example recognizes one gesture, "Flick," which transitions from "Point" to "Flick." Gesture names need not be unique.
 
-There are cases where you need to have the user hold a pose a minimum amount of time before that step is considered complete.  Imagine that you want the user to hold the "Point" pose for a short moment before flicking, then you could customize the gesture in a way similar to the following.
+*Max Transition Time* sets the maximum allowed time (seconds) between poses, including when no pose is recognized. Here, it tolerates up to 0.2 seconds between "Point" and "Flick."
+
+You can require holding a pose before continuing. For example:
 
     Point/200, Flick
 
-The user would then need to hold the "Point" pose for 200 milliseconds before it is considered achieved, and only then would a "Flick" trigger the recognition of the full gesture.
+The user must hold "Point" for 200 milliseconds before "Flick" triggers the gesture.
 
-The *Is Looping* flag is used to recognize gestures that loop.  Waving your hand from left to right is an example of this.
+The *Is Looping* flag enables recognition of looping gestures, like waving your hand.
 
 ### Using a Hand Gesture Recognizer
 
-The gesture recognizer was built first and foremost to support the *force grab* and *force throw* gestures.  Let's look at part of the grabbing code in VRCharacter.
+The gesture recognizer supports *force grab* and *force throw* gestures. Here is part of the grabbing code in VRCharacter:
 
 <img width="512" src="./Media/force_grab_gesture.png" alt="Grab gesture recognition." />
 
-This node returns whether or not a gesture was recognized.  When it is the case, you can access the gesture index, it's name (which may not be unique) and the gesture direction.
+This node returns whether a gesture was recognized. If so, you get the gesture index, name (not necessarily unique), and direction.
 
-The gesture direction is computed as vector from some average location at the end of the first pose and another average location at the beginning of the last pose.
+The gesture direction is a vector from an average location near the end of the first pose to an average location near the start of the last pose.
 
-In addition to this, we have experimented with a few gesture duration measures.  The outer duration starts at the beginning of the first pose to the end of the last pose.  The inner duration starts towards the end of the first pose and the beginning of the last pose.
+We also experimented with gesture duration measures. The outer duration spans from the start of the first pose to the end of the last. The inner duration spans from near the end of the first pose to near the start of the last.
 
-The *Behavior* argument allows you to control how to reset the state of the recognizer after a gesture has been recognized.  By default, only the recognized gesture is reset.  In some situations, you may want to reset the state of all gestures.
+The *Behavior* argument controls how the recognizer resets after recognizing a gesture. By default, only the recognized gesture resets. You can reset all gestures if needed.
 
 <img width="512" src="./Media/gesture_state.png" alt="Gesture progress." />
 
-The Hand Pose Showcase also illustrates how one can detect that a gesture is in progress.  In this case, we highlight the hand of the player when it is ready to flick to the previous or next projector slide.  In the following image the "Flick" gesture is queried to see if it is currently in progress.
+The Hand Pose Showcase shows how to detect a gesture in progress. Here, the player's hand highlights when ready to flick to the previous or next slide. The "Flick" gesture is queried to check if it is in progress.
 
 ## 3. Hand Recognition Blueprint Library
 
 <img width="512" src="./Media/wait_nodes.png" alt="Pose and gesture wait nodes." />
 
-### Waiting for hand pose.
+### Waiting for Hand Pose
 
-UE4 has support for latent blueprint nodes that can hold the execution flow until some condition is met.
+UE4 supports latent blueprint nodes that pause execution until a condition is met.
 
-The *Wait for Hand Pose* node will wait for the specified UHandPoseRecognizer instance to recognize a hand pose.  If you want the hand pose to have been held a minimum amount of time, specify that duration in *Min Pose Duration*.  If you specify a non-negative *Time to Wait*, the node will exit through the *Time Out* execution pin if the node has not recognized a hand pose for that number of seconds. 
+The *Wait for Hand Pose* node waits for a specified UHandPoseRecognizer instance to recognize a pose. Specify *Min Pose Duration* to require the pose be held for a minimum time. If you set a non-negative *Time to Wait*, the node exits via the *Time Out* pin if no pose is recognized within that time.
 
-When a pose is seen, the execution resumes on the *Pose Seen* node exit and the recognized pose index and name will be available on the corresponding pins.
+When a pose is recognized, execution resumes at the *Pose Seen* pin, providing the recognized pose index and name.
 
-### Waiting for gesture.
+### Waiting for Gesture
 
-The *Wait for Hand Gesture* is another latent node that waits for a gesture to be recognized.  You can specify how long, in seconds, that your are willing to wait with the *Time to Wait* parameter.  The *Behavior* argument is the same that you specify in the GetRecognizedHandGesture node discussed earlier.
+The *Wait for Hand Gesture* node waits for a gesture recognition. Specify how long to wait with *Time to Wait*. The *Behavior* argument matches that in the *GetRecognizedHandGesture* node.
 
-When a gesture is recognized, execution resumes on the *Gesture Seen* exec pin and the gesture index, name, direction and durations are available on the corresponding pins.
+When a gesture is recognized, execution resumes at the *Gesture Seen* pin, providing gesture index, name, direction, and durations.
 
-If you have set a *Time to Wait* the node is allowed to exit by the *Time Out* exec pin.
+If *Time to Wait* expires, the node exits via the *Time Out* pin.
 
-You can loop back into the wait node as shown in the screenshot to wait again. 
+You can loop back into the wait node to wait again, as shown in the screenshot.
 
-### Recording a pose range.
+### Recording a Pose Range
 
 <img width="512" src="./Media/pose_range_recording.png" alt="Pose range recording." />
 
-The *Record Hand Pose* blueprint is used to record the range of hand bone angles.  In the screenshot above, taken from the *HandPoseShowcase*,  you can start/stop recording using a keyboard key.  When stopped, the node produces a report to the output log like the following, where I recorded the [royal wave](https://www.youtube.com/watch?v=n5pkDB7zEeo).
+The *Record Hand Pose* blueprint records the range of hand bone angles. In the screenshot from *HandPoseShowcase*, you start and stop recording with a keyboard key. When stopped, the node outputs a report like this (recording the [royal wave](https://www.youtube.com/watch?v=n5pkDB7zEeo)):
 
     Hand Pose Range Recorded #0
       Thumb_0 pitch  11.58 [ -55.70 ..  -44.12]  yaw  13.78 [ -26.18 ..  -12.40]  roll  16.16 [ +44.29 ..  +60.45]
