@@ -37,7 +37,7 @@ The easiest way to start is with the prebuilt Unreal Engine from the Epic Games 
 The Oculus Unreal fork provides the latest Oculus feature integration but requires building the editor from source.
 
 1. [Get access to the Unreal source code](https://developers.meta.com/horizon/documentation/unreal/unreal-building-ue4-from-source/#prerequisites).
-2. [Clone the `oculus-5.3` branch of the Oculus fork](https://github.com/Oculus-VR/UnrealEngine/tree/oculus-5.3).
+2. [Clone the `oculus-5.6` branch of the Oculus fork](https://github.com/Oculus-VR/UnrealEngine/tree/oculus-5.6).
 3. [Install Visual Studio](https://developers.meta.com/horizon/documentation/unreal/unreal-building-ue4-from-source/#to-download-and-build-unreal-engine).
 4. Open a command prompt in the Unreal root directory and run:
 ```sh
@@ -110,3 +110,8 @@ Best way to get new HandTransforms:
 * Open HansCharacterHandsState from OculusHandTools/Content/Hands/
 * Reconnect the Blueprint-flow-nodes
 * This will output the location of your hand when grabbing an object in the correct format for copy and paste.
+
+## 04 December 2025 Update
+
+We fixed an issue related to objects jittering when grabbed.
+We updated the project to UE5.6. + Meta SDK v81

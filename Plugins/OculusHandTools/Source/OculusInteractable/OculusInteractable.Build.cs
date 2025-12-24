@@ -51,6 +51,6 @@ public class OculusInteractable : ModuleRules
 			}
 			);
 
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
 	}
 }

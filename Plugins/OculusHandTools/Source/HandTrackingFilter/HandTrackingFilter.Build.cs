@@ -36,6 +36,6 @@ public class HandTrackingFilter : ModuleRules
 		PrivateIncludePaths.AddRange(new string[] {
 		});
 
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
 	}
 }
