@@ -36,6 +36,6 @@ public class HandInput : ModuleRules
 		PrivateIncludePaths.AddRange(new string[] {
 		});
 
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_7;
 	}
 }

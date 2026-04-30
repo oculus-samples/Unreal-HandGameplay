@@ -51,6 +51,6 @@ public class OculusHandPoseRecognition : ModuleRules
 			}
 			);
 
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_7;
 	}
 }
