@@ -46,7 +46,7 @@ public:
 	static bool GetOculusBuildInfo(FString& SourceControlChangelist, FString& BuildDateTimeString);
 
 	/** Returns the array of components sorted by name. */
-	UFUNCTION(BlueprintCallable, Category = "Oculus Utils", meta = (ComponentClass = "ActorComponent", DeterminesOutputType = "Components"))
+	UFUNCTION(BlueprintCallable, Category = "Oculus Utils", meta = (ComponentClass = "/Script/Engine.ActorComponent", DeterminesOutputType = "Components"))
 	static TArray<UActorComponent*> SortComponentsByName(const TArray<UActorComponent*>& Components);
 
 	/** 
